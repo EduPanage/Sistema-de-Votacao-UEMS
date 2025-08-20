@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Votar - {{ election.title }}</title>
+</head>
+<body>
+    <h1>Votação: {{ election.title }}</h1>
+    <p>{{ election.description }}</p>
+
+    <form method="post">
+        {% csrf_token %}
+        {% for option in election.options.all %}
+            <input type="radio" name="option" value="{{ option.id }}" required>
+            {{ option.name }}<br>
+        {% endfor %}
+        <button type="submit">Votar</button>
+    </form>
+</body>
+</html>

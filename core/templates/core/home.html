@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Votação UEMS</title>
+</head>
+
+<body>
+    <h1>Bem-vindo à Votação UEMS!</h1>
+    <h2>Eleições disponíveis:</h2>
+    <ul>
+        {% for election in elections %}
+        <li>
+            <strong>{{ election.title }}</strong><br>
+            {{ election.description }}<br>
+            Início: {{ election.start_date }} | Fim: {{ election.end_date }}<br>
+            Tipo: {{ election.get_type_display }}
+        </li>
+        {% empty %}
+        <li>Nenhuma eleição disponível no momento.</li>
+        {% endfor %}
+    </ul>
+</body>
+
+</html>
