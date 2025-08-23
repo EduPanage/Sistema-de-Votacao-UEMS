@@ -29,12 +29,15 @@ class Option(models.Model):
 class Voter(models.Model):
     election = models.ForeignKey(Election, on_delete=models.CASCADE, related_name="voters")
     name = models.CharField(max_length=100)
-    email = models.EmailField(unique=True)
+    email = models.EmailField()
     has_voted = models.BooleanField(default=False)
-    vote_token = models.CharField(max_length=64, blank=True)  # para autenticação via link
+    vote_token = models.CharField(max_length=128, blank=True)  # para autenticação via link
+
+    class Meta:
+        unique_together = ('election', 'email')  # um eleitor pode participar de várias eleições
 
     def __str__(self):
-        return self.name
+        return f"{self.name} ({self.email})"
 
 
 class Vote(models.Model):
@@ -42,7 +45,10 @@ class Vote(models.Model):
     voter = models.ForeignKey(Voter, on_delete=models.CASCADE, related_name="votes")
     option = models.ForeignKey(Option, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
-    vote_hash = models.CharField(max_length=64, blank=True)
+    vote_hash = models.CharField(max_length=128, blank=True)
+
+    class Meta:
+        unique_together = ('election', 'voter')  # só um voto válido por eleitor por eleição
 
     def __str__(self):
         return f"Voto de {self.voter.name} em {self.option.name}"
