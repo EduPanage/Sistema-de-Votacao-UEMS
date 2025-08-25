@@ -3,24 +3,31 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Gerenciar Opções - {{ election.title }}</title>
+    <title>Gerenciar Eleitores - {{ election.title }}</title>
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'core/style.css' %}">
 </head>
 
 <body>
-    <h1>Gerenciar Opções para: {{ election.title }}</h1>
+    <h1>Gerenciar Eleitores para: {{ election.title }}</h1>
 
-    <h2>Opções já cadastradas:</h2>
+    <h2>Eleitores já cadastrados:</h2>
     <ul>
-        {% for option in options %}
-        <li>{{ option.name }}</li>
+        {% for voter in voters %}
+        <li>
+            {{ voter.name }} - {{ voter.email }}  
+            <br>Token: {{ voter.vote_token }}
+            <br>Link de Votação: 
+            <a href="{% url 'vote' election.id voter.vote_token %}">
+                {{ request.build_absolute_uri|slice:":-1" }}{% url 'vote' election.id voter.vote_token %}
+            </a>
+        </li>
         {% empty %}
-        <li>Nenhuma opção cadastrada.</li>
+        <li>Nenhum eleitor cadastrado.</li>
         {% endfor %}
     </ul>
 
-    <h2>Adicionar Nova Opção</h2>
+    <h2>Adicionar Novo Eleitor</h2>
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}

@@ -91,7 +91,25 @@ def manage_options(request, election_id):
 
 def manage_voters(request, election_id):
     # RF003 / RF016 - cadastro e gerenciamento de eleitores
-    return HttpResponse(f"Gerenciar eleitores da eleição {election_id} (em construção)")
+    election = get_object_or_404(Election, id=election_id)
+
+    if request.method == 'POST':
+        form = VoterForm(request.POST)
+        if form.is_valid():
+            voter = form.save(commit=False)
+            voter.election = election
+            voter.vote_token = uuid.uuid4().hex  # gera token único
+            voter.save()
+            return redirect('manage_voters', election_id=election.id)
+    else:
+        form = VoterForm()
+
+    voters = election.voters.all()
+    return render(request, 'core/manage_voters.html', {
+        'election': election,
+        'voters': voters,
+        'form': form
+    })
 
 
 def dashboard(request):

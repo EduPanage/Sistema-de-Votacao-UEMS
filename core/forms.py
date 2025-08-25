@@ -1,6 +1,7 @@
 from django import forms
 from .models import Election
 from .models import Option
+from .models import Voter
 
 class ElectionForm(forms.ModelForm):
     class Meta:
@@ -18,3 +19,9 @@ class OptionForm(forms.ModelForm):
         fields = ['name']
         
 
+class VoterForm(forms.ModelForm):
+    class Meta:
+        model = Voter
+        fields = ['name', 'email']
+
+        
