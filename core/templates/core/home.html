@@ -10,14 +10,32 @@
 
 <body>
     <h1>Bem-vindo à Votação UEMS!</h1>
+
+    <!-- Link para criar eleição -->
+    <a class="create-link" href="{% url 'create_election' %}">Criar Nova Eleição</a>
+
     <h2>Eleições disponíveis:</h2>
-    <ul>
+    <ul class="election-list">
         {% for election in elections %}
-        <li>
+        <li class="election-item">
             <strong>{{ election.title }}</strong><br>
             {{ election.description }}<br>
-            Início: {{ election.start_date }} | Fim: {{ election.end_date }}<br>
-            Tipo: {{ election.get_type_display }}
+            Início: {{ election.start_date|date:"d/m/Y H:i" }} | Fim: {{ election.end_date|date:"d/m/Y H:i" }}<br>
+            Tipo: {{ election.get_type_display }}<br>
+
+            {% if voter_tokens %}
+                {% for voter in voter_tokens %}
+                    {% if voter.election.id == election.id %}
+                        {% if not voter.has_voted %}
+                            <a href="{% url 'vote' election.id voter.vote_token %}">Votar</a>
+                        {% else %}
+                            <em>Você já votou nesta eleição</em>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                <em>Você precisa de um token para votar.</em>
+            {% endif %}
         </li>
         {% empty %}
         <li>Nenhuma eleição disponível no momento.</li>
