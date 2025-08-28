@@ -1,18 +1,35 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
-from .models import Election, Option, Voter, Vote
 from django.utils import timezone
-from .forms import ElectionForm
+from .models import Election, Option, Voter, Vote
+from .forms import ElectionForm, OptionForm, VoterForm
 import hashlib
+import uuid
 
 def home(request):
     now = timezone.now()
-    elections = Election.objects.filter(
+
+    ativas = Election.objects.filter(
         is_published=True,
         start_date__lte=now,
         end_date__gte=now
-    )
-    return render(request, "core/home.html", {"elections": elections})
+    ).order_by('end_date')
+
+    futuras = Election.objects.filter(
+        is_published=True,
+        start_date__gt=now
+    ).order_by('start_date')
+
+    encerradas = Election.objects.filter(
+        is_published=True,
+        end_date__lt=now
+    ).order_by('-end_date')
+
+    return render(request, "core/home.html", {
+        "ativas": ativas,
+        "futuras": futuras,
+        "encerradas": encerradas
+    })
 
 
 def vote(request, election_id, token):

@@ -1,0 +1,31 @@
+# Diretórios e arquivos de ambientes virtuais
+.venv/
+env/
+venv/
+__pycache__/
+
+# Arquivos de configurações sensíveis
+.env
+*.json
+*.ini
+local_settings.py
+
+# Diretórios de uploads de usuários (se houver)
+media/
+static_cdn/
+
+# Logs e arquivos de banco de dados
+*.log
+*.sqlite3
+db.sqlite3
+
+# Arquivos gerados pelo Python
+*.pyc
+.pytest_cache/
+.coverage
+
+# Diretórios do IDE
+.idea/
+.vscode/
+*.swp
+*.bak

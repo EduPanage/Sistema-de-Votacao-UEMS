@@ -6,41 +6,81 @@
     <title>Votações UEMS</title>
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'core/style.css' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
 <body>
-    <h1>Bem-vindo à Votação UEMS!</h1>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Bem-vindo ao Sistema de Votação UEMS!</h1>
+        <p class="text-center lead">
+            Sua plataforma para participar e acompanhar as eleições da universidade.
+        </p>
 
-    <!-- Link para criar eleição -->
-    <a class="create-link" href="{% url 'create_election' %}">Criar Nova Eleição</a>
+        <div class="text-center my-4">
+            <a href="{% url 'create_election' %}" class="btn btn-primary btn-lg">Criar Nova Eleição</a>
+        </div>
 
-    <h2>Eleições disponíveis:</h2>
-    <ul class="election-list">
-        {% for election in elections %}
-        <li class="election-item">
-            <strong>{{ election.title }}</strong><br>
-            {{ election.description }}<br>
-            Início: {{ election.start_date|date:"d/m/Y H:i" }} | Fim: {{ election.end_date|date:"d/m/Y H:i" }}<br>
-            Tipo: {{ election.get_type_display }}<br>
+        <h2 class="mt-5">Eleições Ativas <span class="badge bg-success">{{ ativas.count }}</span></h2>
+        <div class="row row-cols-1 row-cols-md-2 g-4">
+            {% for e in ativas %}
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ e.title }}</h5>
+                        <p class="card-text">{{ e.description|truncatechars:100 }}</p>
+                    </div>
+                    <div class="card-footer">
+                        <small class="text-muted">Encerra em: {{ e.end_date|date:"d/m/Y H:i" }}</small>
+                        </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col"><p>Nenhuma eleição ativa no momento.</p></div>
+            {% endfor %}
+        </div>
+        
+        <h2 class="mt-5">Eleições Futuras <span class="badge bg-warning text-dark">{{ futuras.count }}</span></h2>
+        <div class="row row-cols-1 row-cols-md-2 g-4">
+            {% for e in futuras %}
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ e.title }}</h5>
+                        <p class="card-text">{{ e.description|truncatechars:100 }}</p>
+                    </div>
+                    <div class="card-footer">
+                        <small class="text-muted">Inicia em: {{ e.start_date|date:"d/m/Y H:i" }}</small>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col"><p>Nenhuma eleição futura agendada.</p></div>
+            {% endfor %}
+        </div>
 
-            {% if voter_tokens %}
-                {% for voter in voter_tokens %}
-                    {% if voter.election.id == election.id %}
-                        {% if not voter.has_voted %}
-                            <a href="{% url 'vote' election.id voter.vote_token %}">Votar</a>
-                        {% else %}
-                            <em>Você já votou nesta eleição</em>
-                        {% endif %}
-                    {% endif %}
-                {% endfor %}
-            {% else %}
-                <em>Você precisa de um token para votar.</em>
-            {% endif %}
-        </li>
-        {% empty %}
-        <li>Nenhuma eleição disponível no momento.</li>
-        {% endfor %}
-    </ul>
+        <h2 class="mt-5">Eleições Encerradas <span class="badge bg-danger">{{ encerradas.count }}</span></h2>
+        <div class="row row-cols-1 row-cols-md-2 g-4">
+            {% for e in encerradas %}
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ e.title }}</h5>
+                        <p class="card-text">{{ e.description|truncatechars:100 }}</p>
+                    </div>
+                    <div class="card-footer">
+                        <small class="text-muted">Encerrada em: {{ e.end_date|date:"d/m/Y H:i" }}</small>
+                        <a href="#" class="btn btn-secondary float-end disabled">Ver Resultados</a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col"><p>Nenhuma eleição encerrada.</p></div>
+            {% endfor %}
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

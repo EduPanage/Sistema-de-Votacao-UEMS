@@ -1,40 +1,69 @@
-<!DOCTYPE html>
-<html lang="pt-br">
+{% extends 'core/base.html' %}
 
-<head>
-    <meta charset="UTF-8">
-    <title>Gerenciar Eleitores - {{ election.title }}</title>
-    {% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'core/style.css' %}">
-</head>
+{% block content %}
 
-<body>
-    <h1>Gerenciar Eleitores para: {{ election.title }}</h1>
+<div class="container mt-5">
+    <h1 class="mb-4">Gerenciar Eleitores para: {{ election.title }}</h1>
+    <a href="{% url 'home' %}" class="btn btn-secondary mb-4">← Voltar para a Página Inicial</a>
 
-    <h2>Eleitores já cadastrados:</h2>
-    <ul>
-        {% for voter in voters %}
-        <li>
-            {{ voter.name }} - {{ voter.email }}  
-            <br>Token: {{ voter.vote_token }}
-            <br>Link de Votação: 
-            <a href="{% url 'vote' election.id voter.vote_token %}">
-                {{ request.build_absolute_uri|slice:":-1" }}{% url 'vote' election.id voter.vote_token %}
-            </a>
-        </li>
-        {% empty %}
-        <li>Nenhum eleitor cadastrado.</li>
-        {% endfor %}
-    </ul>
+    <div class="row">
+        <div class="col-md-7">
+            <h2>Eleitores já Cadastrados</h2>
+            <div class="table-responsive">
+                <table class="table table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">Nome</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Votou?</th>
+                            <th scope="col">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for voter in voters %}
+                        <tr>
+                            <td>{{ voter.name }}</td>
+                            <td>{{ voter.email }}</td>
+                            <td>
+                                {% if voter.has_voted %}
+                                <span class="badge bg-success">Sim</span>
+                                {% else %}
+                                <span class="badge bg-danger">Não</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{% url 'vote' election.id voter.vote_token %}" class="btn btn-sm btn-info me-2"
+                                    target="_blank">Link</a>
+                                <a href="#" class="btn btn-sm btn-warning me-2 disabled">Editar</a>
+                                <a href="#" class="btn btn-sm btn-danger disabled">Remover</a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4">Nenhum eleitor cadastrado para esta eleição.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
-    <h2>Adicionar Novo Eleitor</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Adicionar</button>
-    </form>
+        <div class="col-md-5">
+            <h2>Adicionar Novo Eleitor</h2>
+            {% if messages %}
+            <div class="alert alert-info">
+                {% for message in messages %}
+                {{ message }}
+                {% endfor %}
+            </div>
+            {% endif %}
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-success">Adicionar Eleitor</button>
+            </form>
+        </div>
+    </div>
+</div>
 
-    <p><a href="{% url 'home' %}">← Voltar</a></p>
-</body>
-
-</html>
+{% endblock %}

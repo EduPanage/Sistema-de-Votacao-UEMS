@@ -1,20 +1,45 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <title>Votar - {{ election.title }}</title>
-</head>
-<body>
-    <h1>Votação: {{ election.title }}</h1>
-    <p>{{ election.description }}</p>
+{% extends 'core/base.html' %}
 
-    <form method="post">
-        {% csrf_token %}
-        {% for option in election.options.all %}
-            <input type="radio" name="option" value="{{ option.id }}" required>
-            {{ option.name }}<br>
-        {% endfor %}
-        <button type="submit">Votar</button>
-    </form>
-</body>
-</html>
+{% block title %}Votação - {{ election.title }}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h1 class="text-center mb-3">Votação: {{ election.title }}</h1>
+            <p class="text-center text-muted">{{ election.description }}</p>
+
+            <form method="post" class="mt-4">
+                {% csrf_token %}
+
+                {% if error_message %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ error_message }}
+                    </div>
+                {% endif %}
+
+                <div class="row row-cols-1 g-3">
+                    {% for option in election.options.all %}
+                        <div class="col">
+                            <label class="card h-100 option-card">
+                                <div class="card-body d-flex align-items-center">
+                                    <input type="radio" name="option" value="{{ option.id }}" class="form-check-input me-3" required>
+                                    <h5 class="mb-0">{{ option.name }}</h5>
+                                </div>
+                            </label>
+                        </div>
+                    {% empty %}
+                        <div class="col text-center">
+                            <p>Não há opções de voto disponíveis para esta eleição.</p>
+                        </div>
+                    {% endfor %}
+                </div>
+                
+                <div class="d-grid mt-4">
+                    <button type="submit" class="btn btn-primary btn-lg">Votar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,12 +1,33 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <title>Voto Registrado</title>
-</head>
-<body>
-    <h1>Obrigado por votar!</h1>
-    <p>Seu voto foi registrado com sucesso.</p>
-    <p>Hash de comprovação: <strong>{{ vote_hash }}</strong></p>
-</body>
-</html>
+{% extends 'core/base.html' %}
+
+{% block title %}Voto Registrado com Sucesso{% endblock %}
+
+{% block content %}
+<div class="container text-center mt-5">
+    <div class="card p-4 mx-auto" style="max-width: 600px;">
+        <h1 class="card-title text-success">
+            <i class="bi bi-check-circle-fill"></i> Voto Registrado!
+        </h1>
+        <p class="lead">Obrigado por participar. Seu voto foi registrado com sucesso.</p>
+
+        <div class="alert alert-info mt-4" role="alert">
+            <h5 class="alert-heading">Hash de Comprovação</h5>
+            <p>
+                Este é o código único do seu voto. Você pode usá-lo para verificar a
+                integridade do seu voto no futuro, quando os resultados forem publicados.
+            </p>
+            <hr>
+            <p class="mb-0">
+                <strong>{{ vote_hash }}</strong>
+            </p>
+        </div>
+
+        <div class="d-grid gap-2 col-6 mx-auto mt-4">
+            <button type="button" class="btn btn-secondary" onclick="navigator.clipboard.writeText('{{ vote_hash }}')">
+                Copiar Hash
+            </button>
+            <a href="{% url 'home' %}" class="btn btn-primary">Voltar para a Página Inicial</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
