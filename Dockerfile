@@ -1,17 +1,20 @@
+# Usa a imagem oficial do Python 3.11
 FROM python:3.11
 
+# Define o diretório de trabalho dentro do contêiner
 WORKDIR /app
 
-# Copia e instala dependências
-COPY requirements.txt requirements.txt
+# Copia o arquivo de dependências e instala as bibliotecas
+COPY requirements.txt .
 RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copia todo o código do projeto e o script de espera
+# Copia todo o código do projeto para o diretório de trabalho
 COPY . .
 
-# Porta padrão do Django
+# Expõe a porta que o Django vai usar
 EXPOSE 8000
 
-# Comando de inicialização
-CMD ["python", "wait_for_db.py", "&&", "python", "manage.py", "runserver", "0.0.0.0:8000"]
+# Executa as migrações e, em seguida, inicia o servidor.
+# O uso de "shell form" (sem colchetes) permite o encadeamento com "&&".
+CMD python manage.py migrate && python manage.py runserver 0.0.0.0:8000
