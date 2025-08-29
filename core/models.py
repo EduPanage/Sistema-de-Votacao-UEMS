@@ -7,12 +7,12 @@ ELECTION_TYPE_CHOICES = (
 )
 
 class Election(models.Model):
-    title = models.CharField(max_length=200)
-    description = models.TextField(blank=True, null=True)
-    start_date = models.DateTimeField()
-    end_date = models.DateTimeField()
-    type = models.CharField(max_length=10, choices=ELECTION_TYPE_CHOICES, default='single')
-    is_published = models.BooleanField(default=False)
+    Título = models.CharField(max_length=200)
+    Descrição = models.TextField(blank=True, null=True)
+    Inicio= models.DateTimeField()
+    Fim = models.DateTimeField()
+    Tipo = models.CharField(max_length=10, choices=ELECTION_TYPE_CHOICES, default='single')
+    Publicar = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title
