@@ -1,24 +1,32 @@
 /* Estilos para o corpo da página */
+html,
 body {
+    height: 100%;
+    margin: 0;
     font-family: Arial, sans-serif;
     background-color: #f8f9fa;
-    /* Cor de fundo clara */
     color: #333;
     line-height: 1.6;
+}
+
+body {
+    display: flex;
+    /* Habilita o Flexbox */
+    flex-direction: column;
+    /* Organiza os itens em coluna */
 }
 
 /* Estilos para o contêiner principal */
 .container {
     max-width: 960px;
-    /* Limita a largura para melhor leitura em telas grandes */
     margin-top: 2rem;
     margin-bottom: 2rem;
+    flex: 1;
 }
 
 /* Estilos para o cabeçalho principal */
 h1 {
     color: #007bff;
-    /* Cor primária do Bootstrap */
     font-weight: bold;
 }
 
@@ -35,14 +43,11 @@ h2 {
 .card {
     border: none;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    /* Sombra suave */
     transition: transform 0.2s;
-    /* Efeito de transição ao passar o mouse */
 }
 
 .card:hover {
     transform: translateY(-5px);
-    /* Efeito de "subir" ao passar o mouse */
 }
 
 /* Estilos para o rodapé do cartão */
@@ -68,15 +73,58 @@ h2 {
     font-size: 0.8rem;
 }
 
-/* NOVAS REGRAS PARA A NAVBAR */
-.bg-dark {
-    background-color: #0B3B56 !important;
+/* ================================== */
+/* REGRAS PARA NAVBAR E FOOTER */
+/* ================================== */
+
+/* Define a cor de fundo para a navbar e o footer */
+.bg-dark,
+footer {
+    background-color: #212529;
 }
 
+/* Garante que os links da navbar tenham a cor correta */
 .navbar-dark .navbar-nav .nav-link {
-    color: rgba(255, 255, 255, 0.8);
+    color: rgba(255, 255, 255, 0.8) !important;
 }
 
 .navbar-dark .navbar-nav .nav-link:hover {
-    color: rgba(255, 255, 255, 1);
+    color: rgba(255, 255, 255, 1) !important;
+}
+
+/* Estilos para o novo rodapé */
+footer {
+    flex-shrink: 0;
+    padding: 10px 0;
+    color: #ffffff !important;
+}
+
+/* Estilos dos links e textos dentro do rodapé */
+footer p,
+footer a {
+    color: #d6d1d1 !important;
+}
+
+/* Estilos dos Ícones Sociais (cor branca) */
+.footer-social-links a i {
+    color: #ffffff !important;
+    /* Deixa os ícones brancos */
+    font-size: 1.3rem;
+    /* Ajuste o tamanho se precisar */
+    margin: 0 10px;
+    transition: color 0.3s ease;
+    /* Transição suave */
+}
+
+/* Efeito de hover para os ícones: muda para verde */
+.footer-social-links a:hover i {
+    color: #008000 !important;
+    /* Cor verde no hover */
+}
+
+/* Garante que as imagens do rodapé sejam responsivas */
+.footer-bottom img {
+    max-width: 100%;
+    height: auto;
+    margin: 5px 0;
 }
