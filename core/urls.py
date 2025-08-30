@@ -13,5 +13,8 @@ urlpatterns = [
     path('painel/election/<int:election_id>/options/', views.manage_options, name='manage_options'),
     path('painel/election/<int:election_id>/voters/', views.manage_voters, name='manage_voters'),
     path('painel/dashboard/', views.dashboard, name='dashboard'),
+
+    #rotas navbar ajuda
+    path('help/', views.help_page, name='help'),
 ]
 

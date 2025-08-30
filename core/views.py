@@ -132,3 +132,8 @@ def manage_voters(request, election_id):
 def dashboard(request):
     # RF015 - dashboard de monitoramento
     return HttpResponse("Dashboard administrativo (em construção)")
+
+
+#Pagina help.html pertencente a rota help/navbar
+def help_page(request):
+    return render(request, 'core/help.html')
