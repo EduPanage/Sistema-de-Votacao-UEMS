@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.utils import timezone
 from .models import Election, Option, Voter, Vote
@@ -70,13 +71,17 @@ def vote_success(request, vote_hash):
 #   Rotas administrativas
 # =========================
 
+@login_required
 def create_election(request):
     # RF001 - criação de eleição
     if request.method == 'POST':
-        form = ElectionForm(request.POST)
+        form = ElectionForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
-            return redirect('home')  # depois podemos redirecionar para dashboard
+            election = form.save(commit=False)
+            election.created_by = request.user
+            election.save()
+            # Redireciona para a página de gerenciamento de opções
+            return redirect('manage_options', election_id=election.id)
     else:
         form = ElectionForm()
     

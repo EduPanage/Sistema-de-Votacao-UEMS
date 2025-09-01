@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # Tipo de eleição: único ou múltiplo
 ELECTION_TYPE_CHOICES = (
@@ -7,15 +8,17 @@ ELECTION_TYPE_CHOICES = (
 )
 
 class Election(models.Model):
-    title = models.CharField(max_length=200)
-    description = models.TextField(blank=True, null=True)
-    start_date = models.DateTimeField()
-    end_date = models.DateTimeField()
-    type = models.CharField(max_length=10, choices=ELECTION_TYPE_CHOICES, default='single')
+    theme = models.CharField(max_length=200, verbose_name='Tema')
+    description = models.TextField(blank=True, null=True, verbose_name='Descrição')
+    start_date = models.DateTimeField(verbose_name='Início')
+    end_date = models.DateTimeField(verbose_name='Fim')
+    type = models.CharField(max_length=10, choices=ELECTION_TYPE_CHOICES, default='single', verbose_name='Tipo de Voto')
+    document = models.FileField(upload_to='election_documents/', blank=True, null=True, verbose_name='Documento')
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, verbose_name='Criado por')
     is_published = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.title
+        return self.theme
 
 
 class Option(models.Model):
@@ -31,10 +34,10 @@ class Voter(models.Model):
     name = models.CharField(max_length=100)
     email = models.EmailField()
     has_voted = models.BooleanField(default=False)
-    vote_token = models.CharField(max_length=128, blank=True)  # para autenticação via link
+    vote_token = models.CharField(max_length=128, blank=True)
 
     class Meta:
-        unique_together = ('election', 'email')  # um eleitor pode participar de várias eleições
+        unique_together = ('election', 'email')
 
     def __str__(self):
         return f"{self.name} ({self.email})"
@@ -48,7 +51,7 @@ class Vote(models.Model):
     vote_hash = models.CharField(max_length=128, blank=True)
 
     class Meta:
-        unique_together = ('election', 'voter')  # só um voto válido por eleitor por eleição
+        unique_together = ('election', 'voter')
 
     def __str__(self):
         return f"Voto de {self.voter.name} em {self.option.name}"

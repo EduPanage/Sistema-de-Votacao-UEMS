@@ -7,6 +7,7 @@ body {
     background-color: #f8f9fa;
     color: #333;
     line-height: 1.6;
+    scroll-behavior: smooth;
 }
 
 body {
@@ -105,21 +106,25 @@ footer a {
     color: #d6d1d1 !important;
 }
 
-/* Estilos dos Ícones Sociais (cor branca) */
-.footer-social-links a i {
+/* Estilos dos Ícones Sociais usando Flexbox */
+.footer-social-links {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    /* Adiciona espaçamento entre os links */
+}
+
+/* Estilos dos Ícones Sociais */
+.social-icon-link i {
     color: #ffffff !important;
-    /* Deixa os ícones brancos */
     font-size: 1.3rem;
-    /* Ajuste o tamanho se precisar */
-    margin: 0 10px;
     transition: color 0.3s ease;
-    /* Transição suave */
 }
 
 /* Efeito de hover para os ícones: muda para verde */
-.footer-social-links a:hover i {
+.social-icon-link:hover i {
     color: #008000 !important;
-    /* Cor verde no hover */
 }
 
 /* Garante que as imagens do rodapé sejam responsivas */

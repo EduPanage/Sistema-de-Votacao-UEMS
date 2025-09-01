@@ -20,8 +20,8 @@ ALLOWED_HOSTS = []
 
 SITE_ID = 1
 
-LOGIN_REDIRECT_URL = '/' # redireciona para home após login
-LOGOUT_REDIRECT_URL = '/' # após logout
+LOGIN_REDIRECT_URL = 'home' # redireciona para home após login
+ACCOUNT_LOGOUT_REDIRECT_URL = '/accounts/login/' # após logout
 
 # Configurações do allauth
 ACCOUNT_LOGIN_METHODS = {"email"}
@@ -36,13 +36,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # Meu app
+    'core',
     'django.contrib.sites', 
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     # Provedores de login social
     'allauth.socialaccount.providers.google',
-    'core',
+    
 ]
 
 MIDDLEWARE = [
@@ -57,7 +59,9 @@ MIDDLEWARE = [
 ]
 
 AUTHENTICATION_BACKENDS = [
+    #Necessário para login por username no admin
     'django.contrib.auth.backends.ModelBackend',
+    # Backend do allauth        
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
@@ -70,6 +74,7 @@ TEMPLATES = [
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
@@ -116,7 +121,7 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = 'static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'core/static')] # Diretório para arquivos estáticos
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'core/static'),] # Diretório para arquivos estáticos
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
