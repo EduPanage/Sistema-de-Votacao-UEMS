@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block content %}
-<div class="text-center mb-4">
+<div class="text-center mb-4 py-5">
     <h1 class="text-center mb-4">Bem-vindo ao Sistema de Votação UEMS!</h1>
     <p class="text-center lead">
         Sua plataforma para participar e acompanhar as eleições da universidade.
@@ -12,7 +12,7 @@
         <a href="{% url 'create_election' %}" class="btn btn-primary btn-lg">Criar Nova Eleição</a>
     </div>
 
-    <h2 class="mt-5">Eleições Ativas <span class="badge bg-success">{{ ativas.count }}</span></h2>
+    <h2 class="mt-5 py-5">Eleições Ativas <span class="badge bg-success">{{ ativas.count }}</span></h2>
     <div class="row row-cols-1 row-cols-md-2 g-4">
         {% for e in ativas %}
         <div class="col">
@@ -33,7 +33,7 @@
         {% endfor %}
     </div>
 
-    <h2 class="mt-5">Eleições Futuras <span class="badge bg-warning text-dark">{{ futuras.count }}</span></h2>
+    <h2 class="mt-5 py-5">Eleições Futuras <span class="badge bg-warning text-dark">{{ futuras.count }}</span></h2>
     <div class="row row-cols-1 row-cols-md-2 g-4">
         {% for e in futuras %}
         <div class="col">
@@ -54,8 +54,8 @@
         {% endfor %}
     </div>
 
-    <h2 class="mt-5">Eleições Encerradas <span class="badge bg-danger">{{ encerradas.count }}</span></h2>
-    <div class="row row-cols-1 row-cols-md-2 g-4">
+    <h2 class="mt-5 py-5">Eleições Encerradas <span class="badge bg-danger">{{ encerradas.count }}</span></h2>
+    <div class="row row-cols-1 row-cols-md-3 g-4">
         {% for e in encerradas %}
         <div class="col">
             <div class="card h-100">
