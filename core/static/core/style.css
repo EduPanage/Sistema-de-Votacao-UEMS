@@ -29,7 +29,7 @@ html,
 body {
     height: 100%;
     margin: 0;
-    font-family: Arial, sans-serif;
+    font-family: Maven Pro, Work Sans, Arial, sans-serif;
     background-color: var(--light-background-color);
     color: var(--text-color);
     line-height: 1.6;
@@ -53,8 +53,8 @@ body {
 /* ================================== */
 /* Botões */
 .btn-primary {
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
+    background-color: var(--dark-background-color);
+    border-color: var(--dark-background-color);
 }
 
 .btn-primary:hover {
@@ -64,7 +64,7 @@ body {
 
 /* Títulos */
 h1 {
-    color: var(--primary-color);
+    color: var(--dark-background-color);
     font-weight: bold;
 }
 
@@ -108,6 +108,10 @@ footer {
 .navbar-dark .navbar-nav .nav-link {
     color: rgba(255, 255, 255, 0.8) !important;
     font-size: 18px;
+}
+
+.navbar {
+    padding: 0;
 }
 
 .navbar-dark .navbar-nav .nav-link:hover {
