@@ -33,37 +33,52 @@ def home(request):
     })
 
 
-def vote(request, election_id, token):
-    # autenticação do eleitor via token
-    voter = get_object_or_404(Voter, election_id=election_id, vote_token=token)
-    election = voter.election
+@login_required
+def vote(request, election_id):
+    # Busca a eleição
+    election = get_object_or_404(Election, id=election_id)
+    
+    # 1. Verifica se o usuário logado é um eleitor válido para esta eleição
+    try:
+        voter = Voter.objects.get(election=election, email=request.user.email)
+    except Voter.DoesNotExist:
+        # Se o e-mail do usuário logado não estiver na lista de eleitores
+        # pode redirecionar para uma página de erro ou mostrar uma mensagem
+        return render(request, 'core/error.html', {'message': 'Você não está autorizado a votar nesta eleição.'})
 
+    # 2. Verifica se o eleitor já votou
+    if voter.has_voted:
+        return render(request, 'core/already_voted.html', {'election': election})
+
+    # Lógica para processar o voto (POST)
     if request.method == 'POST':
         option_id = request.POST.get('option')
         option = get_object_or_404(Option, id=option_id, election=election)
-
-        # cria ou atualiza voto (re-votação)
-        vote_obj, created = Vote.objects.update_or_create(
-            election=election,
-            voter=voter,
-            defaults={'option': option}
+        
+        # Cria o voto
+        vote_obj = Vote.objects.create(election=election,voter=voter, option=option
         )
-
-        # gera hash único do voto (comprovante)
+        
+        # Gera o hash (comprovante)
         vote_str = f"{voter.id}-{option.id}-{timezone.now().timestamp()}"
         vote_obj.vote_hash = hashlib.sha256(vote_str.encode()).hexdigest()
         vote_obj.save()
-
-        # marca eleitor como "já votou"
+        
+        # Marca o eleitor como "já votou"
         voter.has_voted = True
         voter.save()
-
+        
         return redirect("vote_success", vote_hash=vote_obj.vote_hash)
 
-    return render(request, 'core/vote.html', {'election': election, 'voter': voter})
+    # Renderiza a página de votação (GET)
+    options = election.options.all()
+    return render(request, 'core/vote.html', {'election': election,'options': options,'voter': voter})
 
 
 def vote_success(request, vote_hash):
+    # Se o hash for 'already_voted', renderiza uma mensagem diferente
+    if vote_hash == 'already_voted':
+        return render(request, 'core/vote_already_voted.html')
     return render(request, 'core/vote_success.html', {'vote_hash': vote_hash})
 
 
