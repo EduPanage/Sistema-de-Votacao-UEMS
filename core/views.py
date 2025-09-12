@@ -135,7 +135,7 @@ def create_election(request):
             election.created_by = request.user
             election.save()
             # Redireciona para a página de gerenciamento de opções
-            return redirect('manage_options', election_id=election.id)
+            return redirect('manage_voters', election_id=election.id)
     else:
         form = ElectionForm()
     

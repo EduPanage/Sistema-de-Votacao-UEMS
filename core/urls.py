@@ -7,15 +7,13 @@ urlpatterns = [
     # participação do eleitor
     path('election/<int:election_id>/vote/', views.vote, name='vote'),
     path('vote/success/<str:vote_hash>/', views.vote_success, name='vote_success'),
-    path('eleicao/<int:election_id>/resultados/', views.election_results, name='election_results'),
-
+    path('election/<int:election_id>/results/', views.election_results, name='election_results'),
+    
     # rotas administrativas (customizadas)
     path('painel/election/create/', views.create_election, name='create_election'),
-    path('painel/election/<int:election_id>/options/', views.manage_options, name='manage_options'),
     path('painel/election/<int:election_id>/voters/', views.manage_voters, name='manage_voters'),
     path('painel/dashboard/', views.dashboard, name='dashboard'),
 
     #rotas navbar ajuda
     path('help/', views.help_page, name='help'),
 ]
-

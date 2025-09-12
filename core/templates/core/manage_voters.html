@@ -1,0 +1,71 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Gerenciamento de Eleitores{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h1 class="text-center mb-4">Gerenciar Eleitores: <br> {{ election.theme }}</h1>
+            <p class="text-center lead text-muted mb-5">
+                Adicione e gerencie os eleitores que participarão desta eleição.
+            </p>
+
+            <!-- Seção de Cadastro de Novo Eleitor -->
+            <div class="card shadow-sm mb-5 border-info">
+                <div class="card-header bg-info">
+                    <h5 class="mb-0">Adicionar Novo Eleitor</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="{% url 'manage_voters' election.id %}">
+                        {% csrf_token %}
+                        <div class="row g-3 align-items-end">
+                            <div class="col-md-6">
+                                <label for="{{ form.name.id_for_label }}" class="form-label">Nome</label>
+                                {{ form.name }}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="{{ form.email.id_for_label }}" class="form-label">E-mail</label>
+                                {{ form.email }}
+                            </div>
+                            <div class="col-12 text-center">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-plus-circle me-2"></i> Adicionar Eleitor
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Seção de Lista de Eleitores -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Eleitores Cadastrados <span class="badge bg-secondary">{{ voters.count }}</span>
+                    </h5>
+                </div>
+                <ul class="list-group list-group-flush">
+                    {% for voter in voters %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>{{ voter.name }}</strong><br>
+                            <small class="text-muted">{{ voter.email }}</small>
+                        </div>
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal"
+                                data-bs-target="#deleteModal-{{ voter.id }}">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                            <!-- Adicionar mais botões de ação se necessário -->
+                        </div>
+                    </li>
+                    {% empty %}
+                    <li class="list-group-item text-center text-muted">Nenhum eleitor cadastrado ainda.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
