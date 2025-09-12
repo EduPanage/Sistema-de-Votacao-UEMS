@@ -5,8 +5,9 @@ urlpatterns = [
     path('', views.home, name='home'),
 
     # participação do eleitor
-     path('election/<int:election_id>/vote/', views.vote, name='vote'),
+    path('election/<int:election_id>/vote/', views.vote, name='vote'),
     path('vote/success/<str:vote_hash>/', views.vote_success, name='vote_success'),
+    path('eleicao/<int:election_id>/resultados/', views.election_results, name='election_results'),
 
     # rotas administrativas (customizadas)
     path('painel/election/create/', views.create_election, name='create_election'),

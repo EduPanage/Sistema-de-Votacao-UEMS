@@ -1,80 +1,67 @@
 {% extends 'core/base.html' %}
 {% load static %}
 
+{% block title %}Início{% endblock %}
+
 {% block content %}
-<div class="text-center mb-4 py-5">
-    <h1 class="text-center mb-4">Bem-vindo ao Sistema de Votação UEMS!</h1>
-    <p class="text-center lead">
-        Sua plataforma para participar e acompanhar as eleições da universidade.
-    </p>
-
-    <div class="text-center my-4">
-        <a href="{% url 'create_election' %}" class="btn btn-primary btn-lg">Criar Nova Eleição</a>
-    </div>
-
-    <h2 class="mt-5 py-5">Eleições Ativas <span class="badge bg-success">{{ ativas.count }}</span></h2>
-    <div class="row row-cols-1 row-cols-md-2 g-4">
-        {% for e in ativas %}
-        <div class="col">
-            <div class="card h-100">
-                <div class="card-body">
-                    <h5 class="card-title">{{ e.title }}</h5>
-                    <p class="card-text">{{ e.description|truncatechars:100 }}</p>
-                </div>
-                <div class="card-footer">
-                    <small class="text-muted">Encerra em: {{ e.end_date|date:"d/m/Y H:i" }}</small>
-                </div>
+<div class="container mt-5">
+    <div class="row">
+        <!-- Eleições Ativas -->
+        <div class="col-md-4">
+            <h2 class="mb-4 text-center">Eleições Ativas</h2>
+            <div class="list-group">
+                {% for eleicao in ativas %}
+                <a href="{% url 'vote' eleicao.id %}"
+                    class="list-group-item list-group-item-action flex-column align-items-start">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">{{ eleicao.theme }}</h5>
+                        <small class="text-muted">Até {{ eleicao.end_date|date:"d/m/Y H:i" }}</small>
+                    </div>
+                    <p class="mb-1">{{ eleicao.description }}</p>
+                </a>
+                {% empty %}
+                <p class="text-center text-muted">Nenhuma eleição ativa no momento.</p>
+                {% endfor %}
             </div>
         </div>
-        {% empty %}
-        <div class="col">
-            <p>Nenhuma eleição ativa no momento.</p>
-        </div>
-        {% endfor %}
-    </div>
 
-    <h2 class="mt-5 py-5">Eleições Futuras <span class="badge bg-warning text-dark">{{ futuras.count }}</span></h2>
-    <div class="row row-cols-1 row-cols-md-2 g-4">
-        {% for e in futuras %}
-        <div class="col">
-            <div class="card h-100">
-                <div class="card-body">
-                    <h5 class="card-title">{{ e.title }}</h5>
-                    <p class="card-text">{{ e.description|truncatechars:100 }}</p>
+        <!-- Eleições Futuras -->
+        <div class="col-md-4">
+            <h2 class="mb-4 text-center">Eleições Futuras</h2>
+            <div class="list-group">
+                {% for eleicao in futuras %}
+                <div class="list-group-item flex-column align-items-start disabled">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">{{ eleicao.theme }}</h5>
+                        <small class="text-muted">Início em {{ eleicao.start_date|date:"d/m/Y H:i" }}</small>
+                    </div>
+                    <p class="mb-1">{{ eleicao.description }}</p>
                 </div>
-                <div class="card-footer">
-                    <small class="text-muted">Inicia em: {{ e.start_date|date:"d/m/Y H:i" }}</small>
-                </div>
+                {% empty %}
+                <p class="text-center text-muted">Nenhuma eleição futura agendada.</p>
+                {% endfor %}
             </div>
         </div>
-        {% empty %}
-        <div class="col">
-            <p>Nenhuma eleição futura agendada.</p>
-        </div>
-        {% endfor %}
-    </div>
 
-    <h2 class="mt-5 py-5">Eleições Encerradas <span class="badge bg-danger">{{ encerradas.count }}</span></h2>
-    <div class="row row-cols-1 row-cols-md-3 g-4">
-        {% for e in encerradas %}
-        <div class="col">
-            <div class="card h-100">
-                <div class="card-body">
-                    <h5 class="card-title">{{ e.title }}</h5>
-                    <p class="card-text">{{ e.description|truncatechars:100 }}</p>
+        <!-- Eleições Encerradas -->
+        <div class="col-md-4">
+            <h2 class="mb-4 text-center">Eleições Encerradas</h2>
+            <div class="list-group">
+                {% for eleicao in encerradas %}
+                <div class="list-group-item flex-column align-items-start">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">{{ eleicao.theme }}</h5>
+                        <small class="text-muted">Encerrada em {{ eleicao.end_date|date:"d/m/Y H:i" }}</small>
+                    </div>
+                    <p class="mb-1">{{ eleicao.description }}</p>
+                    <a href="{% url 'election_results' eleicao.id %}" class="btn btn-primary btn-sm mt-2">Ver
+                        Resultados</a>
                 </div>
-                <div class="card-footer">
-                    <small class="text-muted">Encerrada em: {{ e.end_date|date:"d/m/Y H:i" }}</small>
-                    <a href="#" class="btn btn-secondary float-end disabled">Ver Resultados</a>
-                </div>
+                {% empty %}
+                <p class="text-center text-muted">Nenhuma eleição encerrada.</p>
+                {% endfor %}
             </div>
         </div>
-        {% empty %}
-        <div class="col">
-            <p>Nenhuma eleição encerrada.</p>
-        </div>
-        {% endfor %}
     </div>
-
 </div>
 {% endblock %}

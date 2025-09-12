@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     # Provedores de login social
     'allauth.socialaccount.providers.google',
+    'widget_tweaks',
     
 ]
 

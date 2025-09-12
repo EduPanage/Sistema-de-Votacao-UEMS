@@ -1,0 +1,39 @@
+{% extends 'core/base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4 text-center">{{ title }}</h1>
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for eleicao in elections %}
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">{{ eleicao.theme }}</h5>
+                    <p class="card-text text-muted">{{ eleicao.description|default:"Sem descrição." }}</p>
+                    {% if title == "Eleições Ativas" %}
+                    <a href="{% url 'vote' eleicao.id %}" class="btn btn-primary">Votar</a>
+                    {% elif title == "Eleições Encerradas" %}
+                    <a href="{% url 'election_results' eleicao.id %}" class="btn btn-info text-white">Ver Resultados</a>
+                    {% else %}
+                    <span class="badge bg-secondary">Aguardando Início</span>
+                    {% endif %}
+                </div>
+                <div class="card-footer text-muted">
+                    {% if title == "Eleições Ativas" %}
+                    <small>Encerra em {{ eleicao.end_date|date:"d/m/Y H:i" }}</small>
+                    {% elif title == "Eleições Futuras" %}
+                    <small>Inicia em {{ eleicao.start_date|date:"d/m/Y H:i" }}</small>
+                    {% else %}
+                    <small>Encerrada em {{ eleicao.end_date|date:"d/m/Y H:i" }}</small>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p class="text-center text-muted w-100">Nenhuma eleição nesta categoria.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

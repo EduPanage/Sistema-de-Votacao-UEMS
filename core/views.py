@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.utils import timezone
+from django.db.models import Count
 from .models import Election, Option, Voter, Vote
 from .forms import ElectionForm, OptionForm, VoterForm
 import hashlib
@@ -10,27 +11,65 @@ import uuid
 def home(request):
     now = timezone.now()
 
+    # Limita a 4 eleições por categoria
     ativas = Election.objects.filter(
         is_published=True,
         start_date__lte=now,
         end_date__gte=now
-    ).order_by('end_date')
+    ).order_by('end_date')[:4]
 
     futuras = Election.objects.filter(
         is_published=True,
         start_date__gt=now
-    ).order_by('start_date')
+    ).order_by('start_date')[:4]
 
     encerradas = Election.objects.filter(
         is_published=True,
         end_date__lt=now
-    ).order_by('-end_date')
+    ).order_by('-end_date')[:4]
+    
+    # Verifica se há mais de 4 eleições para cada categoria para exibir o botão "Ver Mais"
+    show_more_active = Election.objects.filter(is_published=True, start_date__lte=now, end_date__gte=now).count() > 4
+    show_more_future = Election.objects.filter(is_published=True, start_date__gt=now).count() > 4
+    show_more_closed = Election.objects.filter(is_published=True, end_date__lt=now).count() > 4
+
 
     return render(request, "core/home.html", {
         "ativas": ativas,
         "futuras": futuras,
-        "encerradas": encerradas
+        "encerradas": encerradas,
+        "show_more_active": show_more_active,
+        "show_more_future": show_more_future,
+        "show_more_closed": show_more_closed,
     })
+
+
+def list_active_elections(request):
+    now = timezone.now()
+    elections = Election.objects.filter(
+        is_published=True,
+        start_date__lte=now,
+        end_date__gte=now
+    ).order_by('end_date')
+    return render(request, "core/election_list.html", {"elections": elections, "title": "Eleições Ativas"})
+
+
+def list_future_elections(request):
+    now = timezone.now()
+    elections = Election.objects.filter(
+        is_published=True,
+        start_date__gt=now
+    ).order_by('start_date')
+    return render(request, "core/election_list.html", {"elections": elections, "title": "Eleições Futuras"})
+
+
+def list_closed_elections(request):
+    now = timezone.now()
+    elections = Election.objects.filter(
+        is_published=True,
+        end_date__lt=now
+    ).order_by('-end_date')
+    return render(request, "core/election_list.html", {"elections": elections, "title": "Eleições Encerradas"})
 
 
 @login_required
@@ -83,7 +122,7 @@ def vote_success(request, vote_hash):
 
 
 # =========================
-#   Rotas administrativas
+#   Rotas administrativas
 # =========================
 
 @login_required
@@ -146,6 +185,18 @@ def manage_voters(request, election_id):
         'election': election,
         'voters': voters,
         'form': form
+    })
+
+def election_results(request, election_id):
+    # Busca a eleição
+    election = get_object_or_404(Election, id=election_id)
+    
+    # Busca todas as opções da eleição e conta os votos para cada uma
+    results = election.options.annotate(vote_count=Count('vote')).order_by('-vote_count')
+    
+    return render(request, 'core/results.html', {
+        'election': election,
+        'results': results,
     })
 
 

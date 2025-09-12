@@ -1,0 +1,35 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Resultados: {{ election.theme }}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <div class="card shadow-sm p-4">
+                <h1 class="card-title text-center mb-4">Resultados da Eleição</h1>
+                <p class="text-center text-muted"><strong>Tema:</strong> {{ election.theme }}</p>
+
+                <hr class="my-4">
+
+                <ul class="list-group list-group-flush">
+                    {% for option in results %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span class="fs-5">{{ option.name }}</span>
+                        <span class="badge bg-primary rounded-pill">{{ option.vote_count }} votos</span>
+                    </li>
+                    {% empty %}
+                    <li class="list-group-item text-center text-muted">Ainda não há votos registrados para esta eleição.
+                    </li>
+                    {% endfor %}
+                </ul>
+
+                <div class="d-grid gap-2 mt-4">
+                    <a href="{% url 'home' %}" class="btn btn-secondary">Voltar para o Início</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
