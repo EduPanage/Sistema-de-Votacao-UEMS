@@ -16,11 +16,11 @@
 
     <div class="row">
         <!-- Eleições Ativas -->
-        <div class="col-md-4">
+        <div class="col-md-4 mb-4">
             <h2 class="mb-4 text-center">Eleições Ativas</h2>
             <div class="d-grid gap-2">
                 {% for eleicao in ativas %}
-                <div class="card shadow-sm mb-3">
+                <div class="card shadow-sm h-100 mb-3">
                     <div class="card-body">
                         <h5 class="card-title">{{ eleicao.theme }}</h5>
                         <p class="card-text text-muted">{{ eleicao.description|default:"Sem descrição."|truncatechars:100 }}</p>
@@ -34,19 +34,14 @@
                 <p class="text-center text-muted">Nenhuma eleição ativa no momento.</p>
                 {% endfor %}
             </div>
-            {% if show_more_active %}
-            <div class="d-grid gap-2 mt-3">
-                <a href="{% url 'list_active' %}" class="btn btn-outline-secondary">Ver Mais</a>
-            </div>
-            {% endif %}
         </div>
 
         <!-- Eleições Futuras -->
-        <div class="col-md-4">
+        <div class="col-md-4 mb-4">
             <h2 class="mb-4 text-center">Eleições Futuras</h2>
             <div class="d-grid gap-2">
                 {% for eleicao in futuras %}
-                <div class="card shadow-sm mb-3">
+                <div class="card shadow-sm h-100 mb-3">
                     <div class="card-body">
                         <h5 class="card-title">{{ eleicao.theme }}</h5>
                         <p class="card-text text-muted">{{ eleicao.description|default:"Sem descrição."|truncatechars:100 }}</p>
@@ -60,23 +55,18 @@
                 <p class="text-center text-muted">Nenhuma eleição futura agendada.</p>
                 {% endfor %}
             </div>
-            {% if show_more_future %}
-            <div class="d-grid gap-2 mt-3">
-                <a href="{% url 'list_future' %}" class="btn btn-outline-secondary">Ver Mais</a>
-            </div>
-            {% endif %}
         </div>
 
         <!-- Eleições Encerradas -->
-        <div class="col-md-4">
+        <div class="col-md-4 mb-4">
             <h2 class="mb-4 text-center">Eleições Encerradas</h2>
             <div class="d-grid gap-2">
                 {% for eleicao in encerradas %}
-                <div class="card shadow-sm mb-3">
+                <div class="card shadow-sm h-100 mb-3">
                     <div class="card-body">
                         <h5 class="card-title">{{ eleicao.theme }}</h5>
                         <p class="card-text text-muted">{{ eleicao.description|default:"Sem descrição."|truncatechars:100 }}</p>
-                        <a href="{% url 'election_results' eleicao.id %}" class="btn btn-info mt-2">Ver Resultados</a>
+                        <a href="{% url 'election_results' eleicao.id %}" class="btn btn-primary mt-2">Ver Resultados</a>
                     </div>
                     <div class="card-footer text-muted">
                         <small>Encerrada em {{ eleicao.end_date|date:"d/m/Y H:i" }}</small>
@@ -86,11 +76,6 @@
                 <p class="text-center text-muted">Nenhuma eleição encerrada.</p>
                 {% endfor %}
             </div>
-            {% if show_more_closed %}
-            <div class="d-grid gap-2 mt-3">
-                <a href="{% url 'list_closed' %}" class="btn btn-outline-secondary">Ver Mais</a>
-            </div>
-            {% endif %}
         </div>
     </div>
 </div>
