@@ -18,7 +18,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-SITE_ID = 1
+SITE_ID = 2
 
 LOGIN_REDIRECT_URL = 'home' # redireciona para home após login
 ACCOUNT_LOGOUT_REDIRECT_URL = '/accounts/login/' # após logout
@@ -42,9 +42,10 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    'widget_tweaks',
     # Provedores de login social
     'allauth.socialaccount.providers.google',
-    'widget_tweaks',
+    
     
 ]
 
@@ -62,7 +63,7 @@ MIDDLEWARE = [
 AUTHENTICATION_BACKENDS = [
     #Necessário para login por username no admin
     'django.contrib.auth.backends.ModelBackend',
-    # Backend do allauth        
+    # Backend do allauth       
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
@@ -130,18 +131,24 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Configurações do Google e Keycloak para SSO
+from dotenv import load_dotenv
+load_dotenv()
+
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
-        'APP': {
-            'client_id': '70973147276-g9mio3p4hth3jlqj1tqa3p9fmtac2mln7.apps.googleusercontent.com',
-            'secret': 'GOCSPX-9y9zB8gjsDxDtzR41q1kig9fgtq',
-        },
         'SCOPE': [
             'profile',
             'email',
         ],
         'AUTH_PARAMS': {
             'access_type': 'online',
+        },
+        'APP': {
+            # **AQUI DEVE ESTAR APENAS O VALOR LIMPO DA CHAVE**
+            # Assumindo que você usa os nomes GOOGLE_CLIENT_ID e GOOGLE_SECRET no seu .env
+            'client_id': os.environ.get('GOOGLE_CLIENT_ID'), 
+            'secret': os.environ.get('GOOGLE_SECRET'),
+            'key': ''
         }
-    },
+    }
 }
