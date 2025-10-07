@@ -27,22 +27,33 @@ def home(request):
         is_published=True,
         end_date__lt=now
     ).order_by('-end_date')[:4]
-    
-    # Verifica se há mais de 4 eleições para cada categoria para exibir o botão "Ver Mais"
-    show_more_active = Election.objects.filter(is_published=True, start_date__lte=now, end_date__gte=now).count() > 4
-    show_more_future = Election.objects.filter(is_published=True, start_date__gt=now).count() > 4
-    show_more_closed = Election.objects.filter(is_published=True, end_date__lt=now).count() > 4
 
+    # Novos destaques: 3 eleições mais recentes encerradas
+    recentes = Election.objects.filter(
+        is_published=True,
+        end_date__lt=now
+    ).order_by('-end_date')[:3]
+
+    # Verifica se há mais de 4 eleições por categoria (para botão "Ver Mais")
+    show_more_active = Election.objects.filter(
+        is_published=True, start_date__lte=now, end_date__gte=now
+    ).count() > 4
+    show_more_future = Election.objects.filter(
+        is_published=True, start_date__gt=now
+    ).count() > 4
+    show_more_closed = Election.objects.filter(
+        is_published=True, end_date__lt=now
+    ).count() > 4
 
     return render(request, "core/home.html", {
         "ativas": ativas,
         "futuras": futuras,
         "encerradas": encerradas,
+        "recentes": recentes,  
         "show_more_active": show_more_active,
         "show_more_future": show_more_future,
         "show_more_closed": show_more_closed,
     })
-
 
 def list_active_elections(request):
     now = timezone.now()
