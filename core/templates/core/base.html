@@ -14,10 +14,12 @@
 </head>
 
 <body>
+    <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #0B3B56;">
         <div class="container-fluid">
             <a class="navbar-brand" href="https://www.uems.br/" target="_blank">
-                <img src="{% static 'core/images/logo_hrz_white.png' %}" alt="Logo UEMS" style="height: 85px; width: 230px;">
+                <img src="{% static 'core/images/logo_hrz_white.png' %}" alt="Logo UEMS"
+                    style="height: 85px; width: 230px;">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -26,41 +28,79 @@
             <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'home' %}">Início</a>
+                        <a class="nav-link" href="{% url 'home' %}">
+                            <i class="bi bi-house-fill"></i> Início
+                        </a>
                     </li>
                     {% if user.is_authenticated %}
                     <li class="nav-item">
-                        <span class="nav-link text-white">Olá, {{ user.first_name|default:user.username }}!</span>
+                        <a class="nav-link" href="{% url 'dashboard' %}">
+                            <i class="bi bi-speedometer2"></i> Painel
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#logoutModal">Sair</a>
+                        <span class="nav-link text-white">
+                            <i class="bi bi-person-circle"></i> Olá, {{ user.first_name|default:user.username }}!
+                        </span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#logoutModal">
+                            <i class="bi bi-box-arrow-right"></i> Sair
+                        </a>
                     </li>
                     {% else %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'account_login' %}">Conectar</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#notLoggedInModal">Sair</a>
+                        <a class="nav-link" href="{% url 'account_login' %}">
+                            <i class="bi bi-box-arrow-in-right"></i> Conectar
+                        </a>
                     </li>
                     {% endif %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'help' %}">Ajuda</a>
+                        <a class="nav-link" href="{% url 'help' %}">
+                            <i class="bi bi-question-circle"></i> Ajuda
+                        </a>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
+
+    <!-- Mensagens de Feedback -->
+    <div class="container mt-3">
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {% if message.tags == 'success' %}
+            <i class="bi bi-check-circle-fill"></i>
+            {% elif message.tags == 'error' %}
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            {% elif message.tags == 'warning' %}
+            <i class="bi bi-exclamation-circle-fill"></i>
+            {% else %}
+            <i class="bi bi-info-circle-fill"></i>
+            {% endif %}
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+    </div>
+
+    <!-- Conteúdo Principal -->
     <div class="container mt-4">
         {% block content %}
         {% endblock %}
     </div>
 
+    <!-- Modal: Não Logado -->
     <div class="modal fade" id="notLoggedInModal" tabindex="-1" aria-labelledby="notLoggedInModalLabel"
         aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="notLoggedInModalLabel">Ação não permitida</h5>
+                    <h5 class="modal-title" id="notLoggedInModalLabel">
+                        <i class="bi bi-exclamation-triangle"></i> Ação não permitida
+                    </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -74,11 +114,14 @@
         </div>
     </div>
 
+    <!-- Modal: Confirmar Logout -->
     <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="logoutModalLabel">Confirmar Saída</h5>
+                    <h5 class="modal-title" id="logoutModalLabel">
+                        <i class="bi bi-box-arrow-right"></i> Confirmar Saída
+                    </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form action="{% url 'account_logout' %}" method="post">
@@ -95,6 +138,7 @@
         </div>
     </div>
 
+    <!-- Footer -->
     <footer>
         <div class="footer-bottom py-2 text-center">
             <div class="container">
@@ -165,13 +209,15 @@
                 </div>
                 <div class="row align-items-center">
                     <div class="col">
-                        <p class="text-white-0_5 mb-0 text-center">Copyright ©2023 UEMS. Todos os direitos
-                            reservados.</p>
+                        <p class="text-white-50 mb-0 text-center">
+                            Copyright ©2024 UEMS. Todos os direitos reservados.
+                        </p>
                     </div>
                 </div>
             </div>
         </div>
     </footer>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 

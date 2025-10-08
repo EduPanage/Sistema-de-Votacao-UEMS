@@ -1,37 +1,58 @@
 {% extends 'core/base.html' %}
 {% load static %}
 
-{% block title %}Gerenciamento de Eleitores{% endblock %}
+{% block title %}Gerenciar Eleitores - {{ election.theme }}{% endblock %}
 
 {% block content %}
 <div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <h1 class="text-center mb-4">Gerenciar Eleitores: <br> {{ election.theme }}</h1>
-            <p class="text-center lead text-muted mb-5">
-                Adicione e gerencie os eleitores que participarão desta eleição.
-            </p>
+    <!-- Breadcrumb/Progresso -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-center">
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-success disabled">
+                        <i class="bi bi-check-circle-fill"></i> 1. Eleição Criada
+                    </button>
+                    <a href="{% url 'manage_options' election.id %}" class="btn btn-success disabled">
+                        <i class="bi bi-check-circle-fill"></i> 2. Candidatos Adicionados
+                    </a>
+                    <button type="button" class="btn btn-primary disabled">
+                        <i class="bi bi-arrow-right"></i> 3. Adicionar Eleitores
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-            <!-- Seção de Cadastro de Novo Eleitor -->
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="text-center mb-4">
+                <h1>Gerenciar Eleitores</h1>
+                <h4 class="text-muted">{{ election.theme }}</h4>
+                <p class="lead">Adicione os eleitores que poderão participar desta eleição.</p>
+            </div>
+
+            <!-- Card de Adicionar Novo Eleitor -->
             <div class="card shadow-sm mb-5 border-info">
-                <div class="card-header bg-info">
-                    <h5 class="mb-0">Adicionar Novo Eleitor</h5>
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="bi bi-person-plus-fill"></i> Adicionar Novo Eleitor</h5>
                 </div>
                 <div class="card-body">
                     <form method="post" action="{% url 'manage_voters' election.id %}">
                         {% csrf_token %}
                         <div class="row g-3 align-items-end">
-                            <div class="col-md-6">
-                                <label for="{{ form.name.id_for_label }}" class="form-label">Nome</label>
+                            <div class="col-md-5">
+                                <label for="{{ form.name.id_for_label }}" class="form-label">Nome Completo</label>
                                 {{ form.name }}
                             </div>
-                            <div class="col-md-6">
-                                <label for="{{ form.email.id_for_label }}" class="form-label">E-mail</label>
+                            <div class="col-md-5">
+                                <label for="{{ form.email.id_for_label }}" class="form-label">E-mail (@uems.br ou @gmail.com)</label>
                                 {{ form.email }}
+                                <div class="form-text">Use o e-mail institucional ou Google do eleitor</div>
                             </div>
-                            <div class="col-12 text-center">
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="fas fa-plus-circle me-2"></i> Adicionar Eleitor
+                            <div class="col-md-2">
+                                <button type="submit" class="btn btn-info w-100 text-white">
+                                    <i class="bi bi-plus-lg"></i> Adicionar
                                 </button>
                             </div>
                         </div>
@@ -39,33 +60,111 @@
                 </div>
             </div>
 
-            <!-- Seção de Lista de Eleitores -->
-            <div class="card shadow-sm">
-                <div class="card-header bg-light">
-                    <h5 class="mb-0">Eleitores Cadastrados <span class="badge bg-secondary">{{ voters.count }}</span>
+            <!-- Lista de Eleitores -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="bi bi-people-fill"></i> Eleitores Cadastrados 
+                        <span class="badge bg-secondary">{{ voters.count }}</span>
                     </h5>
                 </div>
-                <ul class="list-group list-group-flush">
-                    {% for voter in voters %}
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <div>
-                            <strong>{{ voter.name }}</strong><br>
-                            <small class="text-muted">{{ voter.email }}</small>
+                <div class="card-body">
+                    {% if voters %}
+                    <div class="list-group">
+                        {% for voter in voters %}
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-0">{{ voter.name }}</h6>
+                                <small class="text-muted">{{ voter.email }}</small>
+                            </div>
+                            <div>
+                                <form method="post" action="{% url 'delete_voter' voter.id %}" style="display: inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" 
+                                            onclick="return confirm('Tem certeza que deseja remover este eleitor?')">
+                                        <i class="bi bi-trash"></i> Remover
+                                    </button>
+                                </form>
+                            </div>
                         </div>
-                        <div class="btn-group" role="group">
-                            <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal"
-                                data-bs-target="#deleteModal-{{ voter.id }}">
-                                <i class="fas fa-trash"></i>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center text-muted py-4">
+                        <i class="bi bi-inbox" style="font-size: 3rem;"></i>
+                        <p class="mt-2">Nenhum eleitor cadastrado ainda. Adicione pelo menos um eleitor acima.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Botões de Ação Final -->
+            <div class="card shadow-lg border-success mb-5">
+                <div class="card-body text-center p-4">
+                    <h5 class="card-title mb-3">
+                        <i class="bi bi-check-circle"></i> Finalizar Configuração
+                    </h5>
+                    <p class="text-muted mb-4">
+                        Quando estiver pronto, publique a eleição para que ela apareça na página inicial e os eleitores possam votar.
+                    </p>
+                    
+                    <div class="d-flex justify-content-center gap-3">
+                        <a href="{% url 'manage_options' election.id %}" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left"></i> Voltar para Candidatos
+                        </a>
+                        
+                        {% if voters.count > 0 %}
+                        <form method="post" action="{% url 'publish_election' election.id %}" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-success btn-lg" 
+                                    onclick="return confirm('Tem certeza que deseja publicar esta eleição? Ela ficará visível para todos os eleitores cadastrados.')">
+                                <i class="bi bi-rocket-takeoff"></i> Publicar Eleição
                             </button>
-                            <!-- Adicionar mais botões de ação se necessário -->
-                        </div>
-                    </li>
-                    {% empty %}
-                    <li class="list-group-item text-center text-muted">Nenhum eleitor cadastrado ainda.</li>
-                    {% endfor %}
-                </ul>
+                        </form>
+                        {% else %}
+                        <button class="btn btn-secondary btn-lg" disabled>
+                            <i class="bi bi-lock"></i> Adicione eleitores para publicar
+                        </button>
+                        {% endif %}
+                        
+                        <a href="{% url 'home' %}" class="btn btn-outline-danger">
+                            <i class="bi bi-x-circle"></i> Cancelar
+                        </a>
+                    </div>
+                    
+                    {% if voters.count > 0 %}
+                    <div class="alert alert-info mt-4 mb-0">
+                        <i class="bi bi-info-circle"></i> 
+                        <strong>Lembrete:</strong> Após publicar, a eleição aparecerá na página inicial de acordo com as datas configuradas.
+                    </div>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Modal de Confirmação de Remoção (opcional, para UX melhor) -->
+{% for voter in voters %}
+<div class="modal fade" id="deleteModal-{{ voter.id }}" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Confirmar Remoção</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Tem certeza que deseja remover <strong>{{ voter.name }}</strong> ({{ voter.email }}) da lista de eleitores?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <form method="post" action="{% url 'delete_voter' voter.id %}" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Sim, Remover</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
 {% endblock %}
