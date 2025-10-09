@@ -17,9 +17,27 @@ body {
 /* Estilos para o container principal */
 .container {
     max-width: 960px;
-    margin-top: 2rem;
-    margin-bottom: 2rem;
+    margin-top: 0.5rem;
+    margin-bottom: 1.5rem;
     flex: 1;
+}
+
+/* Remove margem superior adicional */
+.navbar+.container {
+    margin-top: 0.5rem !important;
+}
+
+/* Reduz margem superior adicional do Bootstrap */
+.mt-5 {
+    margin-top: 1.5rem !important;
+}
+
+.mt-4 {
+    margin-top: 1rem !important;
+}
+
+.mt-3 {
+    margin-top: 0.5rem !important;
 }
 
 /* Estilos para o cabeçalho principal */
@@ -139,6 +157,10 @@ footer a {
 }
 
 /* Estilos dos Ícones Sociais */
+.footer-social-links a {
+    text-decoration: none !important;
+}
+
 .footer-social-links a i {
     color: #ffffff !important;
     font-size: 1.5rem;
@@ -147,6 +169,10 @@ footer a {
 }
 
 /* Efeito de hover para os ícones */
+.footer-social-links a:hover {
+    text-decoration: none !important;
+}
+
 .footer-social-links a:hover i {
     color: #28a745 !important;
     transform: scale(1.1);

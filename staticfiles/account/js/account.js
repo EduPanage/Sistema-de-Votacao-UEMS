@@ -1,7 +1,7 @@
 (function () {
   const allauth = window.allauth = window.allauth || {}
 
-  function manageEmailForm(o) {
+  function manageEmailForm (o) {
     const actions = document.getElementsByName('action_remove')
     if (actions.length) {
       actions[0].addEventListener('click', function (e) {

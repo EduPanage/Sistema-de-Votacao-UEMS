@@ -18,7 +18,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-SITE_ID = 2
+SITE_ID = 1
 
 LOGIN_REDIRECT_URL = 'home' # redireciona para home após login
 ACCOUNT_LOGOUT_REDIRECT_URL = '/accounts/login/' # após logout
@@ -130,7 +130,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Configurações do Google e Keycloak para SSO
 from dotenv import load_dotenv
 load_dotenv()
 
