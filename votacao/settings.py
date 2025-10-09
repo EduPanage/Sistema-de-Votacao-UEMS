@@ -134,7 +134,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 from dotenv import load_dotenv
 load_dotenv()
 
-SOCIALACCOUNT_PROVIDERS = {
+"""SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'SCOPE': [
             'profile',
@@ -151,4 +151,4 @@ SOCIALACCOUNT_PROVIDERS = {
             'key': ''
         }
     }
-}
+}"""
