@@ -20,24 +20,41 @@ body {
     margin-top: 0.5rem;
     margin-bottom: 1.5rem;
     flex: 1;
+    padding-top: 0;
 }
 
 /* Remove margem superior adicional */
 .navbar+.container {
     margin-top: 0.5rem !important;
+    padding-top: 0 !important;
 }
 
 /* Reduz margem superior adicional do Bootstrap */
 .mt-5 {
-    margin-top: 1.5rem !important;
+    margin-top: 1rem !important;
 }
 
 .mt-4 {
-    margin-top: 1rem !important;
+    margin-top: 0.75rem !important;
 }
 
 .mt-3 {
     margin-top: 0.5rem !important;
+}
+
+/* Remove espaço extra do body */
+body>.container:first-of-type {
+    padding-top: 0 !important;
+}
+
+/* Ajusta espaçamento de cards centralizados */
+.row.justify-content-center {
+    margin-top: 0.5rem;
+}
+
+/* Específico para página de sucesso de voto */
+.container.text-center {
+    padding-top: 1rem !important;
 }
 
 /* Estilos para o cabeçalho principal */

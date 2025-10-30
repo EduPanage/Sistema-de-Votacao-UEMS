@@ -1,10 +1,389 @@
 {% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Ajuda - Sistema de Votação UEMS{% endblock %}
 
 {% block content %}
-<h1 class="text-center mt-5">Como votar usando o sistema de votação eletrônica</h1>
-<p class="text-center mt-3">
-    Bem-vindo à página de ajuda do Sistema de Votação UEMS. Aqui você encontrará informações sobre
-    como participar das eleições, criar novas votações e gerenciar eleitores e opções.
-    Nosso objetivo é tornar o processo de votação simples, seguro e transparente para todos.
-</p>
+<div class="container mt-3">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="text-center mb-4">
+                <i class="bi bi-question-circle"></i> Central de Ajuda
+            </h1>
+            <p class="lead text-center text-muted mb-5">
+                Bem-vindo à página de ajuda do Sistema de Votação UEMS. Aqui você encontrará informações sobre como
+                participar das eleições, criar votações e gerenciar o sistema.
+            </p>
+        </div>
+    </div>
+
+    <!-- Seção: Para Eleitores -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">
+                        <i class="bi bi-person-check"></i> Para Eleitores
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="accordion" id="accordionElectors">
+
+                        <!-- Item 1 -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="heading1">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapse1">
+                                    <i class="bi bi-1-circle me-2"></i> Como faço para votar?
+                                </button>
+                            </h2>
+                            <div id="collapse1" class="accordion-collapse collapse show"
+                                data-bs-parent="#accordionElectors">
+                                <div class="accordion-body">
+                                    <ol>
+                                        <li>Você receberá um <strong>e-mail</strong> notificando sobre a eleição
+                                            disponível</li>
+                                        <li>Clique no botão <strong>"Votar Agora"</strong> no e-mail ou acesse a página
+                                            inicial do sistema</li>
+                                        <li>Faça login com sua <strong>conta Google institucional</strong> (mesmo e-mail
+                                            cadastrado)</li>
+                                        <li>Selecione a eleição desejada e clique em <strong>"Votar"</strong></li>
+                                        <li>Escolha sua opção e confirme seu voto</li>
+                                        <li>Guarde o <strong>comprovante (hash)</strong> gerado</li>
+                                    </ol>
+                                    <div class="alert alert-info">
+                                        <i class="bi bi-info-circle"></i> <strong>Importante:</strong> Use o mesmo
+                                        e-mail cadastrado como eleitor para fazer login!
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Item 2 -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="heading2">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapse2">
+                                    <i class="bi bi-2-circle me-2"></i> Não recebi o e-mail de notificação
+                                </button>
+                            </h2>
+                            <div id="collapse2" class="accordion-collapse collapse" data-bs-parent="#accordionElectors">
+                                <div class="accordion-body">
+                                    <p>Se você não recebeu o e-mail:</p>
+                                    <ul>
+                                        <li>Verifique sua <strong>caixa de spam/lixo eletrônico</strong></li>
+                                        <li>Confirme se o e-mail cadastrado está correto</li>
+                                        <li>Acesse diretamente a <a href="{% url 'home' %}">página inicial</a> e faça
+                                            login</li>
+                                        <li>Entre em contato com o administrador da eleição</li>
+                                    </ul>
+                                    <div class="alert alert-warning">
+                                        <i class="bi bi-exclamation-triangle"></i> Mesmo sem o e-mail, você pode votar
+                                        acessando o sistema diretamente!
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Item 3 -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="heading3">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapse3">
+                                    <i class="bi bi-3-circle me-2"></i> Mensagem "Você não está autorizado a votar"
+                                </button>
+                            </h2>
+                            <div id="collapse3" class="accordion-collapse collapse" data-bs-parent="#accordionElectors">
+                                <div class="accordion-body">
+                                    <p>Esta mensagem aparece quando:</p>
+                                    <ul>
+                                        <li>Você está logado com um <strong>e-mail diferente</strong> do cadastrado como
+                                            eleitor</li>
+                                        <li>Seu e-mail não foi incluído na lista de eleitores desta eleição</li>
+                                        <li>A eleição foi criada antes do seu cadastro</li>
+                                    </ul>
+                                    <p><strong>Solução:</strong></p>
+                                    <ol>
+                                        <li>Faça <strong>logout</strong> (menu superior)</li>
+                                        <li>Faça login novamente com o e-mail correto (o mesmo do convite)</li>
+                                        <li>Se o problema persistir, contate o administrador</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Item 4 -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="heading4">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapse4">
+                                    <i class="bi bi-4-circle me-2"></i> O que é o hash/comprovante de voto?
+                                </button>
+                            </h2>
+                            <div id="collapse4" class="accordion-collapse collapse" data-bs-parent="#accordionElectors">
+                                <div class="accordion-body">
+                                    <p>O <strong>hash</strong> é um código único gerado após você votar. Ele serve como:
+                                    </p>
+                                    <ul>
+                                        <li>Comprovante de que você votou</li>
+                                        <li>Forma de verificar a integridade do seu voto (futuramente)</li>
+                                        <li>Garantia de rastreabilidade sem identificar em quem você votou</li>
+                                    </ul>
+                                    <p><strong>Exemplo de hash:</strong></p>
+                                    <code
+                                        class="d-block bg-light p-2 rounded">a7f3c2d8e1b4f9a0c3d6e8f1b2a4c7d9...</code>
+                                    <div class="alert alert-success mt-3">
+                                        <i class="bi bi-check-circle"></i> Guarde este código! Você pode precisar dele
+                                        para auditorias futuras.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Item 5 -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="heading5">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapse5">
+                                    <i class="bi bi-5-circle me-2"></i> Posso votar mais de uma vez?
+                                </button>
+                            </h2>
+                            <div id="collapse5" class="accordion-collapse collapse" data-bs-parent="#accordionElectors">
+                                <div class="accordion-body">
+                                    <p><strong>Não.</strong> O sistema permite apenas <strong>um voto por
+                                            eleitor</strong> em cada eleição.</p>
+                                    <p>Após votar, você verá a mensagem "Você já votou nesta eleição" se tentar votar
+                                        novamente.</p>
+                                    <div class="alert alert-info">
+                                        <i class="bi bi-shield-check"></i> Esta proteção garante a integridade do
+                                        processo eleitoral.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Seção: Para Administradores -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white">
+                    <h3 class="mb-0">
+                        <i class="bi bi-gear"></i> Para Administradores
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="accordion" id="accordionAdmins">
+
+                        <!-- Item 1 -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingA1">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseA1">
+                                    <i class="bi bi-1-circle me-2"></i> Como criar uma nova eleição?
+                                </button>
+                            </h2>
+                            <div id="collapseA1" class="accordion-collapse collapse show"
+                                data-bs-parent="#accordionAdmins">
+                                <div class="accordion-body">
+                                    <p>O sistema usa um <strong>wizard (passo-a-passo)</strong> para facilitar a
+                                        criação:</p>
+
+                                    <h5>Passo 1: Dados da Eleição</h5>
+                                    <ul>
+                                        <li>Acesse o <a href="{% url 'dashboard' %}">Dashboard</a></li>
+                                        <li>Clique em "Criar Nova Eleição"</li>
+                                        <li>Preencha: tema, descrição, datas, tipo de voto</li>
+                                        <li>Clique em "Salvar Eleição"</li>
+                                    </ul>
+
+                                    <h5>Passo 2: Adicionar Candidatos</h5>
+                                    <ul>
+                                        <li>Digite o nome do candidato/opção</li>
+                                        <li>Clique em "Adicionar"</li>
+                                        <li>Repita para todos os candidatos</li>
+                                        <li>Clique em "Próximo"</li>
+                                    </ul>
+
+                                    <h5>Passo 3: Adicionar Eleitores</h5>
+                                    <ul>
+                                        <li>Digite nome e e-mail do eleitor</li>
+                                        <li>Clique em "Adicionar Eleitor"</li>
+                                        <li>Repita para todos os eleitores</li>
+                                    </ul>
+
+                                    <h5>Passo 4: Publicar</h5>
+                                    <ul>
+                                        <li>Clique em "Publicar Eleição"</li>
+                                        <li>Confirme no modal</li>
+                                        <li>E-mails serão enviados automaticamente!</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Item 2 -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingA2">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseA2">
+                                    <i class="bi bi-2-circle me-2"></i> Os e-mails estão sendo enviados?
+                                </button>
+                            </h2>
+                            <div id="collapseA2" class="accordion-collapse collapse" data-bs-parent="#accordionAdmins">
+                                <div class="accordion-body">
+                                    <p><strong>Verificação:</strong></p>
+                                    <ol>
+                                        <li>Após publicar, você verá a mensagem: "E-mails enviados para X eleitores"
+                                        </li>
+                                        <li>Verifique os logs do sistema para confirmar</li>
+                                        <li>Teste com seu próprio e-mail primeiro</li>
+                                    </ol>
+
+                                    <p><strong>Configuração necessária para produção:</strong></p>
+                                    <ul>
+                                        <li>Configure EMAIL_HOST_USER no arquivo .env</li>
+                                        <li>Configure EMAIL_HOST_PASSWORD (senha de app Gmail)</li>
+                                        <li>Ative o modo SMTP no settings.py</li>
+                                    </ul>
+
+                                    <div class="alert alert-warning">
+                                        <i class="bi bi-exclamation-triangle"></i> Em desenvolvimento, e-mails aparecem
+                                        apenas nos logs do sistema.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Item 3 -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingA3">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseA3">
+                                    <i class="bi bi-3-circle me-2"></i> Como gerenciar eleições existentes?
+                                </button>
+                            </h2>
+                            <div id="collapseA3" class="accordion-collapse collapse" data-bs-parent="#accordionAdmins">
+                                <div class="accordion-body">
+                                    <p>No <a href="{% url 'dashboard' %}">Dashboard</a>, você pode:</p>
+                                    <ul>
+                                        <li><strong>Ver todas as eleições</strong> criadas por você</li>
+                                        <li><strong>Verificar status</strong> (Rascunho/Ativa/Futura/Encerrada)</li>
+                                        <li><strong>Editar candidatos</strong> (eleições em rascunho)</li>
+                                        <li><strong>Gerenciar eleitores</strong> (eleições em rascunho)</li>
+                                        <li><strong>Ver resultados</strong> (eleições encerradas)</li>
+                                    </ul>
+                                    <div class="alert alert-info">
+                                        <i class="bi bi-info-circle"></i> Após publicar, não é possível editar
+                                        candidatos ou eleitores.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Item 4 -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingA4">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapseA4">
+                                    <i class="bi bi-4-circle me-2"></i> Como visualizar resultados?
+                                </button>
+                            </h2>
+                            <div id="collapseA4" class="accordion-collapse collapse" data-bs-parent="#accordionAdmins">
+                                <div class="accordion-body">
+                                    <p>Para ver os resultados de uma eleição:</p>
+                                    <ol>
+                                        <li>Aguarde a data de término da eleição</li>
+                                        <li>Acesse o <a href="{% url 'dashboard' %}">Dashboard</a> ou a página inicial
+                                        </li>
+                                        <li>Clique em "Ver Resultados" na eleição desejada</li>
+                                        <li>Os votos serão contados automaticamente</li>
+                                    </ol>
+                                    <p><strong>Informações exibidas:</strong></p>
+                                    <ul>
+                                        <li>Número de votos por candidato</li>
+                                        <li>Porcentagem de cada opção</li>
+                                        <li>Total de votos registrados</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Seção: Segurança e Privacidade -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-warning">
+                    <h3 class="mb-0">
+                        <i class="bi bi-shield-check"></i> Segurança e Privacidade
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <h5>Como o sistema protege seu voto?</h5>
+                    <ul>
+                        <li><strong>Autenticação segura:</strong> Login via Google OAuth2</li>
+                        <li><strong>Voto secreto:</strong> Não é possível identificar em quem você votou</li>
+                        <li><strong>Proteção CSRF:</strong> Evita ataques de falsificação</li>
+                        <li><strong>Hash único:</strong> Cada voto gera um comprovante verificável</li>
+                        <li><strong>Um voto por eleitor:</strong> Sistema bloqueia votos duplicados</li>
+                    </ul>
+
+                    <h5 class="mt-4">Seus dados estão seguros?</h5>
+                    <p>Sim! O sistema:</p>
+                    <ul>
+                        <li>Não armazena informações pessoais além de nome e e-mail</li>
+                        <li>Não compartilha dados com terceiros</li>
+                        <li>Usa criptografia em todas as comunicações (HTTPS em produção)</li>
+                        <li>Mantém logs de auditoria para transparência</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Seção: Contato e Suporte -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-info text-white">
+                    <h3 class="mb-0">
+                        <i class="bi bi-headset"></i> Precisa de Ajuda?
+                    </h3>
+                </div>
+                <div class="card-body text-center">
+                    <p class="lead">Se você não encontrou a resposta para sua dúvida, entre em contato:</p>
+                    <div class="row mt-4">
+                        <div class="col-md-4">
+                            <i class="bi bi-envelope" style="font-size: 2rem;"></i>
+                            <p class="mt-2"><strong>E-mail</strong></p>
+                            <p>votacao@uems.br</p>
+                        </div>
+                        <div class="col-md-4">
+                            <i class="bi bi-telephone" style="font-size: 2rem;"></i>
+                            <p class="mt-2"><strong>Telefone</strong></p>
+                            <p>(67) 3000-0000</p>
+                        </div>
+                        <div class="col-md-4">
+                            <i class="bi bi-clock" style="font-size: 2rem;"></i>
+                            <p class="mt-2"><strong>Horário</strong></p>
+                            <p>Seg-Sex: 8h às 18h</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
 {% endblock %}

@@ -4,6 +4,9 @@ from django.http import HttpResponse
 from django.utils import timezone
 from django.db.models import Count
 from django.contrib import messages
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
 from .models import Election, Option, Voter, Vote
 from .forms import ElectionForm, OptionForm, VoterForm
 import hashlib
@@ -89,20 +92,56 @@ def vote(request, election_id):
     # Busca a eleição
     election = get_object_or_404(Election, id=election_id)
     
+    # Verifica se a eleição está ativa
+    now = timezone.now()
+    if not election.is_published:
+        messages.error(request, 'Esta eleição ainda não foi publicada.')
+        return redirect('home')
+    
+    if now < election.start_date:
+        messages.warning(request, f'Esta eleição ainda não começou. Início: {election.start_date.strftime("%d/%m/%Y %H:%M")}')
+        return redirect('home')
+    
+    if now > election.end_date:
+        messages.info(request, 'Esta eleição já foi encerrada. Você pode ver os resultados.')
+        return redirect('election_results', election_id=election.id)
+    
     # 1. Verifica se o usuário logado é um eleitor válido para esta eleição
+    # CORREÇÃO: Compara e-mails de forma case-insensitive
     try:
-        voter = Voter.objects.get(election=election, email=request.user.email)
+        voter = Voter.objects.get(
+            election=election, 
+            email__iexact=request.user.email  # Case-insensitive
+        )
     except Voter.DoesNotExist:
-        messages.error(request, 'Você não está autorizado a votar nesta eleição.')
-        return render(request, 'core/error.html', {'message': 'Você não está autorizado a votar nesta eleição.'})
+        messages.error(
+            request, 
+            f'Você não está autorizado a votar nesta eleição. '
+            f'Seu e-mail ({request.user.email}) não está na lista de eleitores. '
+            f'Entre em contato com o administrador se achar que isso é um erro.'
+        )
+        return render(request, 'core/error.html', {
+            'message': 'Você não está autorizado a votar nesta eleição.',
+            'details': f'E-mail usado: {request.user.email}'
+        })
 
     # 2. Verifica se o eleitor já votou
     if voter.has_voted:
+        messages.warning(request, 'Você já votou nesta eleição!')
         return render(request, 'core/already_voted.html', {'election': election})
 
     # Lógica para processar o voto (POST)
     if request.method == 'POST':
         option_id = request.POST.get('option')
+        if not option_id:
+            messages.error(request, 'Por favor, selecione uma opção antes de votar.')
+            options = election.options.all()
+            return render(request, 'core/vote.html', {
+                'election': election,
+                'options': options,
+                'voter': voter
+            })
+        
         option = get_object_or_404(Option, id=option_id, election=election)
         
         # Cria o voto
@@ -121,7 +160,7 @@ def vote(request, election_id):
         voter.has_voted = True
         voter.save()
         
-        messages.success(request, 'Voto registrado com sucesso!')
+        messages.success(request, 'Voto registrado com sucesso! Guarde seu comprovante.')
         return redirect("vote_success", vote_hash=vote_obj.vote_hash)
 
     # Renderiza a página de votação (GET)
@@ -242,7 +281,7 @@ def delete_voter(request, voter_id):
 
 @login_required
 def publish_election(request, election_id):
-    """Publicar eleição - torna visível no home"""
+    """Publicar eleição - torna visível no home e notifica eleitores"""
     election = get_object_or_404(Election, id=election_id)
     
     if request.method == 'POST':
@@ -259,10 +298,63 @@ def publish_election(request, election_id):
         election.is_published = True
         election.save()
         
-        messages.success(request, f'🎉 Eleição "{election.theme}" publicada com sucesso! Ela já está visível na página inicial.')
+        # Envia e-mails para todos os eleitores
+        send_election_notification(election)
+        
+        messages.success(request, f'🎉 Eleição "{election.theme}" publicada com sucesso! E-mails enviados para {election.voters.count()} eleitores.')
         return redirect('home')
     
     return redirect('manage_voters', election_id=election_id)
+
+
+def send_election_notification(election):
+    """Envia e-mail de notificação para todos os eleitores"""
+    from django.conf import settings
+    
+    # URL base do site
+    site_url = 'http://localhost:8000'  # Mudar para domínio real em produção
+    vote_url = f"{site_url}/election/{election.id}/vote/"
+    
+    # Tipo de eleição legível
+    election_type = 'Voto Único' if election.type == 'single' else 'Voto Múltiplo'
+    
+    # Formatar datas
+    start_date = election.start_date.strftime('%d/%m/%Y às %H:%M')
+    end_date = election.end_date.strftime('%d/%m/%Y às %H:%M')
+    
+    # Para cada eleitor
+    for voter in election.voters.all():
+        # Renderiza o template HTML
+        html_message = render_to_string('core/email_notification.html', {
+            'voter_name': voter.name,
+            'voter_email': voter.email,
+            'election_theme': election.theme,
+            'election_description': election.description,
+            'election_type': election_type,
+            'start_date': start_date,
+            'end_date': end_date,
+            'vote_url': vote_url,
+        })
+        
+        # Versão em texto simples (fallback)
+        plain_message = strip_tags(html_message)
+        
+        # Assunto do e-mail
+        subject = f'Nova Eleição: {election.theme}'
+        
+        try:
+            # Envia o e-mail
+            send_mail(
+                subject=subject,
+                message=plain_message,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[voter.email],
+                html_message=html_message,
+                fail_silently=False,
+            )
+        except Exception as e:
+            # Log do erro (não interrompe o processo)
+            print(f"Erro ao enviar e-mail para {voter.email}: {str(e)}")
 
 
 def election_results(request, election_id):
