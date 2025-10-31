@@ -49,7 +49,7 @@ def home(request):
         is_published=True, end_date__lt=now
     ).count() > 4
 
-    return render(request, "core/home.html", {
+    return render(request, "core/pages/home.html", {
         "ativas": ativas,
         "futuras": futuras,
         "encerradas": encerradas,
@@ -66,7 +66,10 @@ def list_active_elections(request):
         start_date__lte=now,
         end_date__gte=now
     ).order_by('end_date')
-    return render(request, "core/election_list.html", {"elections": elections, "title": "Eleições Ativas"})
+    return render(request, "core/elections/election_list.html", {
+        "elections": elections, 
+        "title": "Eleições Ativas"
+    })
 
 
 def list_future_elections(request):
@@ -75,7 +78,10 @@ def list_future_elections(request):
         is_published=True,
         start_date__gt=now
     ).order_by('start_date')
-    return render(request, "core/election_list.html", {"elections": elections, "title": "Eleições Futuras"})
+    return render(request, "core/elections/election_list.html", {
+        "elections": elections, 
+        "title": "Eleições Futuras"
+    })
 
 
 def list_closed_elections(request):
@@ -84,7 +90,10 @@ def list_closed_elections(request):
         is_published=True,
         end_date__lt=now
     ).order_by('-end_date')
-    return render(request, "core/election_list.html", {"elections": elections, "title": "Eleições Encerradas"})
+    return render(request, "core/elections/election_list.html", {
+        "elections": elections, 
+        "title": "Eleições Encerradas"
+    })
 
 
 @login_required
@@ -106,12 +115,11 @@ def vote(request, election_id):
         messages.info(request, 'Esta eleição já foi encerrada. Você pode ver os resultados.')
         return redirect('election_results', election_id=election.id)
     
-    # 1. Verifica se o usuário logado é um eleitor válido para esta eleição
-    # CORREÇÃO: Compara e-mails de forma case-insensitive
+    # Verifica se o usuário logado é um eleitor válido para esta eleição
     try:
         voter = Voter.objects.get(
             election=election, 
-            email__iexact=request.user.email  # Case-insensitive
+            email__iexact=request.user.email
         )
     except Voter.DoesNotExist:
         messages.error(
@@ -120,15 +128,15 @@ def vote(request, election_id):
             f'Seu e-mail ({request.user.email}) não está na lista de eleitores. '
             f'Entre em contato com o administrador se achar que isso é um erro.'
         )
-        return render(request, 'core/error.html', {
+        return render(request, 'core/pages/error.html', {
             'message': 'Você não está autorizado a votar nesta eleição.',
             'details': f'E-mail usado: {request.user.email}'
         })
 
-    # 2. Verifica se o eleitor já votou
+    # Verifica se o eleitor já votou
     if voter.has_voted:
         messages.warning(request, 'Você já votou nesta eleição!')
-        return render(request, 'core/already_voted.html', {'election': election})
+        return render(request, 'core/voting/already_voted.html', {'election': election})
 
     # Lógica para processar o voto (POST)
     if request.method == 'POST':
@@ -136,7 +144,7 @@ def vote(request, election_id):
         if not option_id:
             messages.error(request, 'Por favor, selecione uma opção antes de votar.')
             options = election.options.all()
-            return render(request, 'core/vote.html', {
+            return render(request, 'core/voting/vote.html', {
                 'election': election,
                 'options': options,
                 'voter': voter
@@ -165,7 +173,7 @@ def vote(request, election_id):
 
     # Renderiza a página de votação (GET)
     options = election.options.all()
-    return render(request, 'core/vote.html', {
+    return render(request, 'core/voting/vote.html', {
         'election': election,
         'options': options,
         'voter': voter
@@ -175,8 +183,8 @@ def vote(request, election_id):
 def vote_success(request, vote_hash):
     # Se o hash for 'already_voted', renderiza uma mensagem diferente
     if vote_hash == 'already_voted':
-        return render(request, 'core/vote_already_voted.html')
-    return render(request, 'core/vote_success.html', {'vote_hash': vote_hash})
+        return render(request, 'core/voting/already_voted.html')
+    return render(request, 'core/voting/vote_success.html', {'vote_hash': vote_hash})
 
 
 # =========================
@@ -193,12 +201,11 @@ def create_election(request):
             election.created_by = request.user
             election.save()
             messages.success(request, 'Eleição criada com sucesso! Agora adicione os candidatos/opções.')
-            # Redireciona para a página de gerenciamento de opções (CORRIGIDO)
             return redirect('manage_options', election_id=election.id)
     else:
         form = ElectionForm()
     
-    return render(request, 'core/create_election.html', {'form': form})
+    return render(request, 'core/elections/create_election.html', {'form': form})
 
 
 @login_required
@@ -219,7 +226,7 @@ def manage_options(request, election_id):
         form = OptionForm()
 
     options = election.options.all()
-    return render(request, 'core/manage_options.html', {
+    return render(request, 'core/elections/manage_options.html', {
         'election': election,
         'options': options,
         'form': form
@@ -250,7 +257,7 @@ def manage_voters(request, election_id):
         if form.is_valid():
             voter = form.save(commit=False)
             voter.election = election
-            voter.vote_token = uuid.uuid4().hex  # gera token único
+            voter.vote_token = uuid.uuid4().hex
             voter.save()
             messages.success(request, f'Eleitor "{voter.name}" adicionado com sucesso!')
             return redirect('manage_voters', election_id=election.id)
@@ -258,7 +265,7 @@ def manage_voters(request, election_id):
         form = VoterForm()
 
     voters = election.voters.all()
-    return render(request, 'core/manage_voters.html', {
+    return render(request, 'core/elections/manage_voters.html', {
         'election': election,
         'voters': voters,
         'form': form
@@ -325,7 +332,7 @@ def send_election_notification(election):
     # Para cada eleitor
     for voter in election.voters.all():
         # Renderiza o template HTML
-        html_message = render_to_string('core/email_notification.html', {
+        html_message = render_to_string('core/emails/email_notification.html', {
             'voter_name': voter.name,
             'voter_email': voter.email,
             'election_theme': election.theme,
@@ -374,7 +381,7 @@ def election_results(request, election_id):
         else:
             result.percentage = 0
     
-    return render(request, 'core/results.html', {
+    return render(request, 'core/results/results.html', {
         'election': election,
         'results': results,
         'total_votes': total_votes,
@@ -396,7 +403,7 @@ def dashboard(request):
     # Eleições do usuário
     my_elections = Election.objects.filter(created_by=request.user).order_by('-start_date')
     
-    return render(request, 'core/dashboard.html', {
+    return render(request, 'core/admin/dashboard.html', {
         'total_elections': total_elections,
         'active_elections': active_elections,
         'my_elections': my_elections,
@@ -405,4 +412,4 @@ def dashboard(request):
 
 def help_page(request):
     """Página de ajuda"""
-    return render(request, 'core/help.html')
+    return render(request, 'core/pages/help.html')
