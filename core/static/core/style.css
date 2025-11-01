@@ -20,7 +20,8 @@ body {
     margin-top: 0.5rem;
     margin-bottom: 1.5rem;
     flex: 1;
-    padding-top: 0;
+    padding-top: 1rem;
+    padding-bottom: 4rem
 }
 
 /* Remove margem superior adicional */
