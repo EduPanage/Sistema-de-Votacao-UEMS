@@ -1,0 +1,70 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Cadastro - Sistema de Votação UEMS{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg p-4">
+                <div class="text-center mb-4">
+                    <h1 class="text-primary">
+                        <i class="bi bi-person-plus-fill"></i> Cadastro
+                    </h1>
+                    <p class="text-muted">
+                        Complete seu cadastro para acessar o sistema
+                    </p>
+                </div>
+
+                <form method="post" action="{% url 'account_signup' %}">
+                    {% csrf_token %}
+
+                    {% if form.errors %}
+                    <div class="alert alert-danger">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        Por favor, corrija os erros abaixo.
+                    </div>
+                    {% endif %}
+
+                    <div class="mb-3">
+                        <label class="form-label">
+                            <i class="bi bi-envelope"></i> E-mail
+                        </label>
+                        <input type="email" name="email" value="{{ form.email.value|default:'' }}" 
+                               class="form-control form-control-lg" readonly>
+                        <small class="text-muted">Este é o e-mail da sua conta Google</small>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label">
+                            <i class="bi bi-person"></i> Nome de usuário
+                        </label>
+                        <input type="text" name="username" value="{{ form.username.value|default:'' }}" 
+                               class="form-control form-control-lg" placeholder="Escolha um nome de usuário" required>
+                        {% if form.username.errors %}
+                        <div class="text-danger mt-1">
+                            {{ form.username.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-check-circle"></i> Completar Cadastro
+                        </button>
+                        <a href="{% url 'account_login' %}" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left"></i> Voltar
+                        </a>
+                    </div>
+                </form>
+
+                <div class="alert alert-info mt-4 mb-0">
+                    <i class="bi bi-info-circle"></i>
+                    <strong>Dica:</strong> Escolha um nome de usuário que você lembrará facilmente.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

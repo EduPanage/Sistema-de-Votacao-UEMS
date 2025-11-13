@@ -157,7 +157,7 @@ h2 {
 .navbar-dark .navbar-nav .nav-link {
     color: rgba(255, 255, 255, 0.9) !important;
     transition: color 0.2s ease;
-    font-size: 1.1rem;        /* Tamanho da fonte dos links */
+    font-size: 1.22rem;        /* Tamanho da fonte dos links */
     padding: 0.5rem 1rem;     /* Espaçamento interno */
     margin: 0 0.15rem;         /* Espaçamento entre itens */
 }
