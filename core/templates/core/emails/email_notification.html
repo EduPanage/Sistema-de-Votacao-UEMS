@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nova Eleição Disponível - UEMS</title>
+</head>
+
+<body
+    style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f4f4;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f4f4f4; padding: 20px;">
+        <tr>
+            <td align="center">
+                <!-- Container Principal -->
+                <table width="600" cellpadding="0" cellspacing="0"
+                    style="background-color: #ffffff; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+
+                    <!-- Header com logo UEMS -->
+                    <tr>
+                        <td style="background-color: #0B3B56; padding: 30px; text-align: center;">
+                            <h1 style="color: #ffffff; margin: 0; font-size: 28px;">
+                                🗳️ Sistema de Votação UEMS
+                            </h1>
+                            <p style="color: #ffffff; margin: 10px 0 0 0; font-size: 14px; opacity: 0.9;">
+                                Universidade Estadual de Mato Grosso do Sul
+                            </p>
+                        </td>
+                    </tr>
+
+                    <!-- Saudação -->
+                    <tr>
+                        <td style="padding: 30px 40px 20px 40px;">
+                            <h2 style="color: #333333; margin: 0 0 10px 0; font-size: 24px;">
+                                Olá, {{ voter_name }}!
+                            </h2>
+                            <p style="color: #666666; font-size: 16px; line-height: 1.6; margin: 0;">
+                                Você foi convidado(a) a participar de uma nova eleição.
+                            </p>
+                        </td>
+                    </tr>
+
+                    <!-- Informações da Eleição -->
+                    <tr>
+                        <td style="padding: 0 40px 30px 40px;">
+                            <div
+                                style="background-color: #f8f9fa; border-left: 4px solid #0B3B56; padding: 20px; border-radius: 5px;">
+                                <h3 style="color: #0B3B56; margin: 0 0 15px 0; font-size: 20px;">
+                                    📋 {{ election_theme }}
+                                </h3>
+
+                                {% if election_description %}
+                                <p style="color: #555555; font-size: 15px; line-height: 1.6; margin: 0 0 20px 0;">
+                                    {{ election_description }}
+                                </p>
+                                {% endif %}
+
+                                <table width="100%" cellpadding="8" cellspacing="0" style="font-size: 14px;">
+                                    <tr>
+                                        <td style="color: #666666; padding: 8px 0;">
+                                            <strong>📅 Início:</strong>
+                                        </td>
+                                        <td style="color: #333333; text-align: right; padding: 8px 0;">
+                                            {{ start_date }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="color: #666666; padding: 8px 0;">
+                                            <strong>⏰ Término:</strong>
+                                        </td>
+                                        <td style="color: #333333; text-align: right; padding: 8px 0;">
+                                            {{ end_date }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="color: #666666; padding: 8px 0;">
+                                            <strong>🎯 Tipo de Voto:</strong>
+                                        </td>
+                                        <td style="color: #333333; text-align: right; padding: 8px 0;">
+                                            {{ election_type }}
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <!-- Botão de Ação -->
+                    <tr>
+                        <td style="padding: 0 40px 30px 40px; text-align: center;">
+                            <a href="{{ vote_url }}"
+                                style="display: inline-block; background-color: #28a745; color: #ffffff; text-decoration: none; padding: 15px 40px; border-radius: 5px; font-size: 16px; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+                                🗳️ VOTAR AGORA
+                            </a>
+                        </td>
+                    </tr>
+
+                    <!-- Instruções -->
+                    <tr>
+                        <td style="padding: 0 40px 30px 40px; border-top: 1px solid #eeeeee;">
+                            <h4 style="color: #0B3B56; margin: 20px 0 15px 0; font-size: 18px;">
+                                📌 Como votar:
+                            </h4>
+                            <ol
+                                style="color: #666666; font-size: 14px; line-height: 1.8; padding-left: 20px; margin: 0;">
+                                <li>Clique no botão "VOTAR AGORA" acima</li>
+                                <li>Faça login com sua conta Google (<strong>{{ voter_email }}</strong>)</li>
+                                <li>Selecione sua opção de voto</li>
+                                <li>Confirme seu voto</li>
+                                <li>Guarde o comprovante (hash) que será gerado</li>
+                            </ol>
+                        </td>
+                    </tr>
+
+                    <!-- Aviso Importante -->
+                    <tr>
+                        <td style="padding: 0 40px 30px 40px;">
+                            <div
+                                style="background-color: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; border-radius: 5px;">
+                                <p style="color: #856404; font-size: 14px; margin: 0; line-height: 1.6;">
+                                    <strong>⚠️ Importante:</strong> Use o mesmo e-mail cadastrado (<strong>{{
+                                        voter_email }}</strong>) para fazer login no sistema. Você pode votar apenas uma
+                                    vez.
+                                </p>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <!-- Footer -->
+                    <tr>
+                        <td
+                            style="background-color: #f8f9fa; padding: 25px 40px; text-align: center; border-top: 1px solid #eeeeee;">
+                            <p style="color: #999999; font-size: 13px; margin: 0 0 10px 0; line-height: 1.6;">
+                                Este é um e-mail automático. Por favor, não responda.<br>
+                                Em caso de dúvidas, acesse a Central de Ajuda.
+                            </p>
+                            <p style="color: #999999; font-size: 12px; margin: 10px 0 0 0;">
+                                © 2025 UEMS - Universidade Estadual de Mato Grosso do Sul<br>
+                                Sistema de Votação Digital
+                            </p>
+                        </td>
+                    </tr>
+
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+
+</html>
+```
+
+---
+
+## ✅ Estrutura Final:
+```
+core/
+└── templates/
+└── core/
+└── emails/ ← Criar esta pasta
+└── email_notification.html ← Criar este arquivo
