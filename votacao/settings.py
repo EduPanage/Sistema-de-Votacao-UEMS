@@ -3,7 +3,8 @@ Django settings for votacao project.
 """
 
 from pathlib import Path
-import os # Importe o módulo os
+from decouple import config
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,15 +21,17 @@ ALLOWED_HOSTS = []
 
 SITE_ID = 1
 
-LOGIN_REDIRECT_URL = 'home' # redireciona para home após login
-ACCOUNT_LOGOUT_REDIRECT_URL = '/accounts/login/' # após logout
+LOGIN_REDIRECT_URL = 'home'
+ACCOUNT_LOGOUT_REDIRECT_URL = '/accounts/login/'
 
 # Configurações do allauth
-ACCOUNT_LOGIN_METHODS = {"email"}
-ACCOUNT_SIGNUP_FIELDS = ["email*", "username*", "password1*", "password2*"]
+ACCOUNT_EMAIL_VERIFICATION = 'none'
+ACCOUNT_LOGIN_METHODS = {'email'}
+ACCOUNT_SIGNUP_FIELDS = ['email*', 'username*', 'password1*', 'password2*']
+SOCIALACCOUNT_LOGIN_ON_GET = True
+SOCIALACCOUNT_AUTO_SIGNUP = True
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -36,17 +39,19 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # Meu app
-    'core',
-    'django.contrib.sites', 
+    'django.contrib.sites',
+    
+    # Allauth
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-    'widget_tweaks',
-    # Provedores de login social
     'allauth.socialaccount.providers.google',
     
+    # Outros
+    'widget_tweaks',
     
+    # Seu app
+    'core',
 ]
 
 MIDDLEWARE = [
@@ -61,7 +66,7 @@ MIDDLEWARE = [
 ]
 
 AUTHENTICATION_BACKENDS = [
-    #Necessário para login por username no admin
+    # Necessário para login por username no admin
     'django.contrib.auth.backends.ModelBackend',
     # Backend do allauth       
     'allauth.account.auth_backends.AuthenticationBackend',
@@ -72,7 +77,7 @@ ROOT_URLCONF = 'votacao.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')], # Adiciona o diretório de templates raiz
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -91,11 +96,23 @@ WSGI_APPLICATION = 'votacao.wsgi.application'
 # Database
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': config('DB_NAME', default='votacao_uems'),
+        'USER': config('DB_USER', default='postgres'),
+        'PASSWORD': config('DB_PASSWORD'),
+        'HOST': config('DB_HOST', default='localhost'),
+        'PORT': config('DB_PORT', default='5432'),
     }
 }
 
+# Email Configuration
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = config('EMAIL_HOST', default='smtp.gmail.com')
+EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
+EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
+EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
+DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='noreply@uems.br')
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
@@ -123,17 +140,14 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = 'static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'core/static'),] # Diretório para arquivos estáticos
-
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'core/static'),]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-from dotenv import load_dotenv
-load_dotenv()
-
-"""SOCIALACCOUNT_PROVIDERS = {
+# Google OAuth Configuration
+SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'SCOPE': [
             'profile',
@@ -143,11 +157,9 @@ load_dotenv()
             'access_type': 'online',
         },
         'APP': {
-            # **AQUI DEVE ESTAR APENAS O VALOR LIMPO DA CHAVE**
-            # Assumindo que você usa os nomes GOOGLE_CLIENT_ID e GOOGLE_SECRET no seu .env
-            'client_id': os.environ.get('GOOGLE_CLIENT_ID'), 
-            'secret': os.environ.get('GOOGLE_SECRET'),
+            'client_id': config('GOOGLE_CLIENT_ID', default=''),
+            'secret': config('GOOGLE_CLIENT_SECRET', default=''),
             'key': ''
         }
     }
-}"""
+}
