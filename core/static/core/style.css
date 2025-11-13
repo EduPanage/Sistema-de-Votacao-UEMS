@@ -134,6 +134,12 @@ h2 {
     border-radius: 8px;
     border: none;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    font-size: 1.2rem;
+    /* Aumenta tamanho da fonte */
+    padding: 1.2rem 1.5rem;
+    /* Aumenta padding interno */
+    margin-bottom: 1.5rem;
+    /* Mais espaço abaixo */
 }
 
 .alert i {
@@ -151,10 +157,13 @@ h2 {
 .navbar-dark .navbar-nav .nav-link {
     color: rgba(255, 255, 255, 0.9) !important;
     transition: color 0.2s ease;
+    font-size: 1.1rem;        /* Tamanho da fonte dos links */
+    padding: 0.5rem 1rem;     /* Espaçamento interno */
+    margin: 0 0.15rem;         /* Espaçamento entre itens */
 }
 
 .navbar-dark .navbar-nav .nav-link:hover {
-    color: rgba(255, 255, 255, 1) !important;
+    color: #28a745 !important;
 }
 
 /* ================================== */
