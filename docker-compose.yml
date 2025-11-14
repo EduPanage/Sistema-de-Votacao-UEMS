@@ -3,6 +3,8 @@ version: "3.9"
 services:
   db:
     image: postgres:15
+    env_file:
+      - .env
     environment:
       POSTGRES_DB: ${DB_NAME:-votacao_uems}
       POSTGRES_USER: ${DB_USER:-postgres}
@@ -15,6 +17,8 @@ services:
 
   web:
     build: .
+    env_file:
+      - .env
     environment:
       # Carrega TODAS as variáveis do .env
       SECRET_KEY: ${SECRET_KEY}
