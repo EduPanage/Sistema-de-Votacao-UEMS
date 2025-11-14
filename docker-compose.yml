@@ -4,9 +4,9 @@ services:
   db:
     image: postgres:15
     environment:
-      POSTGRES_DB: votacao
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
+      POSTGRES_DB: ${DB_NAME:-votacao_uems}
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-1234}
     ports:
       - "5432:5432"
     volumes:
@@ -16,8 +16,30 @@ services:
   web:
     build: .
     environment:
-      DB_HOST: db
+      # Carrega TODAS as variáveis do .env
+      SECRET_KEY: ${SECRET_KEY}
+      DEBUG: ${DEBUG:-True}
+      ALLOWED_HOSTS: ${ALLOWED_HOSTS:-localhost,127.0.0.1}
+      
+      # PostgreSQL (sobrescreve DB_HOST para Docker)
+      DB_NAME: ${DB_NAME:-votacao_uems}
+      DB_USER: ${DB_USER:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-1234}
+      DB_HOST: db  
       DB_PORT: 5432
+      
+      # Google OAuth
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      
+      # E-mail
+      EMAIL_HOST: ${EMAIL_HOST:-smtp.gmail.com}
+      EMAIL_PORT: ${EMAIL_PORT:-587}
+      EMAIL_USE_TLS: ${EMAIL_USE_TLS:-True}
+      EMAIL_HOST_USER: ${EMAIL_HOST_USER}
+      EMAIL_HOST_PASSWORD: ${EMAIL_HOST_PASSWORD}
+      DEFAULT_FROM_EMAIL: ${DEFAULT_FROM_EMAIL:-noreply@uems.br}
+      
       DJANGO_SETTINGS_MODULE: votacao.settings
     ports:
       - "8000:8000"
